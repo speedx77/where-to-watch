@@ -1,0 +1,4 @@
+const tmdbKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDcyYjZlNzJjMGI1NmVmN2YzMWYwN2ZiNDlhZWU4NCIsIm5iZiI6MTczNjQ1ODI2MC4wMzEwMDAxLCJzdWIiOiI2NzgwNDAxNGVkNjc5ZTUzZjg3YjEyNGQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.LQG7UW7ZK43G30S4L8Bj9n2M68LWleidyqiQn_2CQj0";
+const traktAPIKey = "";
+
+export { tmdbKey, traktAPIKey };

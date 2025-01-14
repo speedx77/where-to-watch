@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
-import {watchModeApiKey} from "./secrets.js";
+import {tmdbKey, traktAPIKey} from "./secrets.js";
 
 const app = express();
 const port = 3001;
@@ -13,13 +13,13 @@ const db = new pg.Client({
     password: "test123",
     port: 5432,
 });
-db.connect();
+//db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", async (req, res) => {
-    res.status(200).send("Where To Watch")
+    res.status(200).render("home.ejs")
 });
 
 /*
@@ -31,7 +31,19 @@ app.get("/", async (req, res) => {
 
     display metadata on FE
 
+    ----------- new ideas 1/14 ------------
 
+    search using traktAPI, find tmdb id
+    display results via
+        tmdb show/movie image via id
+        tmdb show detail via id
+    click on /show/id or /movie/id content/id
+        display tmdb show/movie image via id
+        tmdb show detail via id
+        tmdb where to watch
+        tmdb vendor images
+
+        -we're not linking out to external service
 
 */
 
