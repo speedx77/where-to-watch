@@ -47,6 +47,12 @@ app.get("/", async (req, res) => {
 
 */
 
+app.post("/search", async (req, res) => {
+    let searchTerm = req.body.searchTerm;
+
+    
+})
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
