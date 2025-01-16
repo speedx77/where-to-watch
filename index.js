@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import axios from "axios";
 import {tmdbKey, traktAPIKey} from "./secrets.js";
 
 const app = express();
@@ -49,9 +50,47 @@ app.get("/", async (req, res) => {
 
 app.post("/search", async (req, res) => {
     let searchTerm = req.body.searchTerm;
+    var movieResponse;
+    var showResponse;
 
+    // https://api.trakt.tv/search/movie?query=cars
+    try{
+        movieResponse = await axios.get(`https://api.trakt.tv/search/movie?query=${searchTerm}`, {
+            headers : {
+                "Content-Type" : "application/json",
+                "trakt-api-version" : 2,
+                "trakt-api-key" : "085da6080bfa1ca467eba85623f724c7602df0a966fe56b59748b8a1c7e72516"
+            }
+        })
+    } catch(error){
+        console.log(error)
+    }
+    try {
+        showResponse = await axios.get(`https://api.trakt.tv/search/show?query=${searchTerm}`, {
+            headers : {
+                "Content-Type" : "application/json",
+                "trakt-api-version" : 2,
+                "trakt-api-key" : "085da6080bfa1ca467eba85623f724c7602df0a966fe56b59748b8a1c7e72516"
+            }
+        })
+    } catch (error){
+        console.log(error)
+    }
     
+    const movieResult = movieResponse.data;
+    const showResult = showResponse.data;
+
+    let searchResults = {
+        movie : movieResult,
+        show : showResult
+    }
+
+    res.send(searchResults);
+    
+
+
 })
+
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
