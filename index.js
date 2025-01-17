@@ -47,11 +47,20 @@ app.get("/", async (req, res) => {
         -we're not linking out to external service
 
 */
+app.get("/testResult", async (req, res) => {
+    res.render("results.ejs")
+})
 
 app.post("/search", async (req, res) => {
     let searchTerm = req.body.searchTerm;
     var movieResponse;
     var showResponse;
+    var errorMsg = {
+        error: "Show or Movie could not be found!",
+        tryAgain: "Please Try Again!"
+    };
+
+    var searchPackage = [];
 
     // https://api.trakt.tv/search/movie?query=cars
     try{
@@ -64,6 +73,8 @@ app.post("/search", async (req, res) => {
         })
     } catch(error){
         console.log(error)
+        res.status(404).send(errorMsg)
+
     }
     try {
         showResponse = await axios.get(`https://api.trakt.tv/search/show?query=${searchTerm}`, {
@@ -75,19 +86,86 @@ app.post("/search", async (req, res) => {
         })
     } catch (error){
         console.log(error)
+        res.status(404).send(errorMsg)
     }
-    
+
     const movieResult = movieResponse.data;
     const showResult = showResponse.data;
+
+    console.log(movieResult.length)
+    console.log(showResult.length);
 
     let searchResults = {
         movie : movieResult,
         show : showResult
     }
 
-    res.send(searchResults);
-    
+    if (movieResult.length === 0){
+        console.log("no movies found")
+    } else{
+        for (var i = 0; i < movieResult.length; i++){
+            var detailResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieResult[i].movie.ids.tmdb}?language=en-US`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
 
+            var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieResult[i].movie.ids.tmdb}/images`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            //console.log(imageResponse.data.id)
+            //console.log(imageResponse.posters)
+
+            searchPackage.push({
+                type: movieResult[i].type,
+                year : movieResult[i].movie.year,
+                title : movieResult[i].movie.title,
+                description : detailResponse.overview,
+                poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
+
+            })
+        }
+    }
+
+    if (showResult.length ===  0){
+        console.log("No shows found")
+    } else {
+        for (var i = 0; i < showResult.length; i++){
+            var detailResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showResult[i].show.ids.tmdb}?language=en-US`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showResult[i].show.ids.tmdb}/images`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            searchPackage.push({
+                type: showResult[i].type,
+                year : showResult[i].show.year,
+                title : showResult[i].show.title,
+                description : showResult.overview,
+                poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
+
+            })
+        }
+    }
+
+    res.status(200).send(searchPackage);
 
 })
 
