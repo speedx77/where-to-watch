@@ -1,12 +1,10 @@
 html {
-    height: 100vh;
 }
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     background-color: #ececec;
 }
 
@@ -61,31 +59,43 @@ body {
 
 #resultsContainer {
     display: flex;
-    flex-direction: column;
+    height: 100%;
     width: 100%;
-    height: 90%;
-    background-color: black;
+    flex-direction: column;
     justify-content: start;
     align-items: center;
 }
 
 .result {
-    width: 70%;
-    height: 20%;
-    background-color: red;
+    width: 800px;
+    height: 200px;
+    /* background-color: red; */
+    border: 1px solid black;
+    border-radius: 8px;
+    box-shadow: 10px -10px rgb(125, 18, 187);
 
 }
 
 .posterArea {
-    width: 40%;
     height: 100%;
-    background-color: green;
+    width: 30%;
+    /* background-color: green; */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
 
+.poster {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 
 .infoArea {
-    width: 60%;
     height: 100%;
-    background-color: blue;
-
+    width: 70%;
+    /* background-color: blue; */
 }
+
