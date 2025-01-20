@@ -27,4 +27,4 @@ In the Age of Streaming, Where To Watch is a search engine that helps users find
     - background will be .mp4 of favorite shows/movies with static overlay and transitions
     - conclude in LARGE logo of WHERE TO WATCH
 
-    
+2. Video Preview on search results?

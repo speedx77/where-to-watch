@@ -132,6 +132,8 @@ app.post("/search", async (req, res) => {
                         
     
                         searchPackage.push({
+                            id: movieResult[i].movie.ids.tmdb,
+                            popularity: detailResponse.data.popularity,                            
                             type: movieResult[i].type,
                             year : movieResult[i].movie.year,
                             title : movieResult[i].movie.title,
@@ -190,6 +192,8 @@ app.post("/search", async (req, res) => {
                         //console.log(detailResponse)
 
                         searchPackage.push({
+                            id: showResult[i].show.ids.tmdb,
+                            popularity: detailResponse.data.popularity,
                             type: showResult[i].type,
                             year : showResult[i].show.year,
                             title : showResult[i].show.title,
@@ -209,11 +213,61 @@ app.post("/search", async (req, res) => {
             
         }
     }
+    //need to sort by closest match and then popularity score
+    searchPackage.sort((element1, element2) => element2.popularity - element1.popularity)
 
     wasSearchTermFound = true
     //res.status(200).send(searchPackage)
     res.status(200).render("results.ejs", {wasSearchTermFound : wasSearchTermFound, searchData : searchPackage});
 
+})
+
+app.get("/show/:id", async (req,res) => {
+    let id = req.params.id
+    let detailPagePackage;
+
+
+    try{
+
+        var detailResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            try {
+
+                var providerResponse = await axios.get(``, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                })
+
+                
+                detailPagePackge = {
+                    
+                }
+
+
+            } catch(error) {
+                console.log(error)
+            }
+
+    } catch(error) {
+        console.log(error)
+    }
+
+
+
+    res.status(200).send(id)
+})
+
+app.get("/movie/:id", async (req,res) => {
+    let id = req.params.id
+    res.status(200).send(id)
 })
 
 

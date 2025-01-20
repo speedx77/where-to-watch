@@ -1,20 +1,37 @@
 <%- include("partials/header.ejs") %>
-        
-<div id="resultsContainer">
-    <% if(wasSearchTermFound === true) {%>
-        <% for (var i=0; i < searchData.length; i++) {%>
-            <div class="result d-flex mb-3">
-                <div class="posterArea" style="background-image: url('<%= searchData[i].poster%>');">
-                </div>
-                <div class="infoArea">
-                    <h4><%= searchData[i].title%></h4>
-                    <h5><%= searchData[i].year%> - <%= searchData[i].type%></h5>
-                    <p style="text-overflow: ellipsis;"><%= searchData[i].description%></p>
-                </div>
-            </div>
+
+<%  function capitalize(word){
+    let firstLetter = word.charAt(0);
+
+    let firstLetterCapitalized = firstLetter.toUpperCase();
+
+    word = word.replace(firstLetter, firstLetterCapitalized);
+
+    return word
+}  
+
+
+%>
+<div class="d-flex flex-column">
+    
+    <div id="resultsContainer">
+        <% if(wasSearchTermFound === true) {%>
+            <% for (var i=0; i < searchData.length; i++) {%>
+                <a class="result d-flex mb-3" href="#" style="text-decoration: none; color: black" data-content-type="<%= searchData[i].type %>" data-tmdb-id="<%= searchData[i].id%>">
+                        <div class="posterArea" style="background-image: url('<%= searchData[i].poster%>');">
+                        </div>
+                        <div class="infoArea">
+                            <h4 > <%= searchData[i].title%></h4>
+                            <h5><%= searchData[i].year%> - <%= capitalize(searchData[i].type)%></h5>
+                            <p><%= searchData[i].description%></p>
+                        </div>
+                </a>
+            <% } %>
+        <% } 
+        else { %>
+            <h1>Show/Movie Not Found!</h1>
         <% } %>
-    <% } 
-    else { %>
-        <h1>Show/Movie Not Found!</h1>
-    <% } %>
+    </div>
 </div>
+
+<script src="/scripts/searchResults.js"></script>

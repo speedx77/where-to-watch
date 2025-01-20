@@ -64,33 +64,51 @@ body {
     flex-direction: column;
     justify-content: start;
     align-items: center;
+    margin-top: 50px;
+
 }
 
 .result {
     width: 800px;
-    height: 200px;
+    height: 150px;
     /* background-color: red; */
     border: 1px solid black;
     border-radius: 8px;
     box-shadow: 10px -10px rgb(125, 18, 187);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 
+
+}
+
+.result-filter {
+    width: 800px;
+    height: 200px;
+    border-radius: 8px;
+
+    backdrop-filter: blur(10px);
+    z-index: 0;
 }
 
 .posterArea {
     height: 100%;
-    width: 30%;
+    width: 15%;
     /* background-color: green; */
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: start;
     background-size: contain;
+    border-radius: 8px;
+
 }
 
 .poster {
-    width: 100%;
     height: 100%;
+    width: auto;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+
 }
 
 .infoArea {
@@ -99,3 +117,19 @@ body {
     /* background-color: blue; */
 }
 
+.infoArea p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    text-overflow: ellipsis; 
+    overflow: hidden;
+    
+
+
+}
+
+#tvContainer{
+    height: 500px;
+    width: 1000px;
+    background-color: gold;
+}
