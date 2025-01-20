@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import axios from "axios";
-import {tmdbKey, traktClientId} from "./secrets.js";
+import {tmdbKey, traktClientId} from "./secrets/secrets.js";
 
 const app = express();
 const port = 3001;
@@ -248,7 +248,7 @@ app.get("/show/:id", async (req,res) => {
 
                 
                 detailPagePackge = {
-                    
+
                 }
 
 
