@@ -239,7 +239,7 @@ app.get("/show/:id", async (req,res) => {
 
             try {
 
-                var providerResponse = await axios.get(``, {
+                var providerResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers`, {
                     headers : {
                         "accept" : "application/json",
                         "Authorization" : `Bearer ${tmdbKey}`
@@ -247,8 +247,42 @@ app.get("/show/:id", async (req,res) => {
                 })
 
                 
-                detailPagePackge = {
+                try {
 
+                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/images`, {
+                            headers : {
+                                "accept" : "application/json",
+                                "Authorization" : `Bearer ${tmdbKey}`
+                            }
+                        }
+                    )
+
+                    //types = flatrate, buy, ads (see providers example)
+                    /*
+                    id: showResult[i].show.ids.tmdb,
+                            popularity: detailResponse.data.popularity,
+                            type: showResult[i].type,
+                            year : showResult[i].show.year,
+                            title : showResult[i].show.title,
+                            description : detailResponse.data.overview,
+                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
+                    */
+                    detailPagePackage = {
+                        id: id,
+                        type: "Show",
+                        premiere_date: detailResponse.data.first_air_date || null,
+                        title: detailResponse.data.name || null,
+                        tagline: detailResponse.data.tagline || null,
+                        description: detailResponse.data.overview || null,
+                        genres: detailResponse.data.genres || null,
+                        poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                        backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
+                        providers: providerResponse.data.results.US
+
+                    }
+
+                } catch (error) {
+                    console.log(error)
                 }
 
 
@@ -260,9 +294,10 @@ app.get("/show/:id", async (req,res) => {
         console.log(error)
     }
 
+    
 
 
-    res.status(200).send(id)
+    res.status(200).send(detailPagePackage)
 })
 
 app.get("/movie/:id", async (req,res) => {

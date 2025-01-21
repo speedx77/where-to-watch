@@ -28,3 +28,5 @@ In the Age of Streaming, Where To Watch is a search engine that helps users find
     - conclude in LARGE logo of WHERE TO WATCH
 
 2. Video Preview on search results?
+
+3. filter images by en "iso_639_1": "en", attribute
