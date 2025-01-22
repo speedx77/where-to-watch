@@ -297,7 +297,8 @@ app.get("/show/:id", async (req,res) => {
     
 
 
-    res.status(200).send(detailPagePackage)
+    //res.status(200).send(detailPagePackage)
+    res.status(200).render("show-detail.ejs", {detailPage : detailPagePackage})
 })
 
 app.get("/movie/:id", async (req,res) => {
