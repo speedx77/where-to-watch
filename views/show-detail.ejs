@@ -1,9 +1,9 @@
 <%- include("partials/header.ejs") %>
 <div id="detailPageContainer" class="d-flex flex-column">
     <div id="heroContainer">
-        <div id="hero" class="d-flex justify-content-center align-items-center gap-2" style="background-image: linear-gradient(-180deg, rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 0.3) 100%), url('<%= detailPage.backdrop%>');">
+        <div id="hero" class="d-flex justify-content-center align-items-center gap-3" style="background-image: linear-gradient(-180deg, rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 0.3) 100%), url('<%= detailPage.backdrop%>');">
 
-            <div id="heroPoster" style="background-image: url('<%= detailPage.poster%>');"></div>
+            <img id="heroPoster" src="<%= detailPage.poster%>">
             <div id="heroInfo"  class="d-flex flex-column justify-content-center">
                 <h1 id="heroTitle"><%= detailPage.title%> - <small><%= detailPage.premiere_date.split("-")[0]%></small></h1>
                 <div class="d-flex gap-2">
@@ -11,39 +11,59 @@
                         <small class="heroGenre"><%= element.name %></small>
                     <% }) %>
                 </div>
-                <h3 id="heroTagline"><%= detailPage.tagline %></h3>
+                <h3 id="heroTagline" class="mt-2"><%= detailPage.tagline %></h3>
                 <p id="heroDescription"> <%= detailPage.description%></p>
+                <div id="likeArea" class="d-flex gap-3">
+                    <div id="like"></div><div id="dislike"></div>
+                </div>
             </div>
         </div>
     </div>
     
     
-    <div id="providerArea">
+    <div id="providerArea" class="d-flex flex-column align-items-center mt-3">
     
-        <h1>Where to Watch <span><%= detailPage.title%></span></h1>
+        <h1>Where to Watch <span id="providerDetailName"><%= detailPage.title%></span></h1>
        
         <% if (detailPage.providers.flatrate) { %>
-            <h2>Subscription</h2>
+            <h2 class="mt-2">Subscription</h2>
+            <div id="subscriptionArea" class="d-flex gap-2">
             <% detailPage.providers.flatrate.forEach((element) => { %>
-                <img src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                <div><%= element.provider_name %></div>
+                <div class="subscription providerBlocks d-flex flex-column">
+                    <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                    <div><%= element.provider_name %></div>
+                </div>
+                
            <% })%>
+            </div>
+            
         <% } %>
 
         <% if (detailPage.providers.ads) { %>
-            <h2>Free With Ads</h2>
-            <% detailPage.providers.ads.forEach((element) => { %>
-                <img src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                <div><%= element.provider_name %></div>
-           <% })%>
+            <h2 class="mt-2">Free With Ads</h2>
+            <div id="adsArea" class="d-flex gap-2">
+                <% detailPage.providers.ads.forEach((element) => { %>
+                    <div class="ad providerBlocks d-flex flex-column">
+                        <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                        <div><%= element.provider_name %></div>
+                    </div>
+                    
+               <% })%>
+            </div>
+            
         <% } %>
 
         <% if (detailPage.providers.buy) { %>
-            <h2>Purchase to Own</h2>
-            <% detailPage.providers.buy.forEach((element) => { %>
-                <img src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                <div><%= element.provider_name %></div>
-           <% })%>
+            <h2 class="mt-2">Purchase to Own</h2>
+            <div id="purchaseArea" class="d-flex gap-2">
+                <% detailPage.providers.buy.forEach((element) => { %>
+                    <div class="purchase providerBlocks d-flex flex-column">
+                        <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                        <div><%= element.provider_name %></div>
+                    </div>
+               <% })%>
+            </div>
+            
         <% } %>
     </div>
 </div>

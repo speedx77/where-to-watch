@@ -143,6 +143,10 @@ body {
     background-color: blue;
 }
 
+#heroContainer {
+    border-bottom: 5px solid rgb(125, 18, 187);
+}
+
 #hero {
     width: 100%;
     height: 600px;
@@ -153,15 +157,11 @@ body {
 }
 
 #heroPoster {
-    height: 450px;
-    width: 20%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
+    height: 375px;
+    width: 250px;
     border-radius: 8px;
-    background-color: rgb(125, 18, 187);
     border: 2px solid white;
-}
+    box-shadow: 0px 0px 5px 5px black}
 
 #heroInfo{
     height: 500px;
@@ -170,6 +170,13 @@ body {
 
 #heroContainer{
     color: white;
+}
+
+#heroTitle{
+    background-color: rgba(0,0,0, 0.5);
+    border-radius: 5px;
+    padding: px;
+    width: fit-content;
 }
 
 .heroGenre {
@@ -183,6 +190,10 @@ body {
 
 #heroTagline{
     font-style: italic;
+    background-color: rgba(0,0,0, 0.5);
+    border-radius: 5px;
+    padding: px;
+    width: fit-content;
 }
 
 #heroDescription {
@@ -191,3 +202,46 @@ body {
     padding: 3px;
 }
 
+#providerDetailName {
+    color: rgb(125, 18, 187);
+}
+
+.provider{
+    height: 85px;
+    width: 85px;
+    border-radius: 4px;
+    margin-top: 2px;
+}
+
+.providerBlocks {
+    width: 92px;
+    height: 160px;
+    font-size: 14px;
+    text-wrap: wrap;
+    border: 2px solid rgb(125, 18, 187);
+    font-weight: bold;
+    color: white;
+    background-color: rgb(125, 18, 187);
+    border-radius: 8px;
+    justify-content: start;
+    align-items: center;
+    text-align: center;
+}
+
+#like{
+    width: 32px;
+    height: 32px;
+    background-image: url('../assets/like.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#dislike{
+    width: 32px;
+    height: 32px;
+    background-image: url('../assets/dislike.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
