@@ -30,6 +30,17 @@ In the Age of Streaming, Where To Watch is a search engine that helps users find
 2. Video Preview on search results?
 
 3. filter images by en "iso_639_1": "en", attribute
+    - or api param to only search for en images
+
+4. DB ideas
+  - user table (user id / username / password)
+  - recent search (user id / searchTerm) (max capacity of 10)
+  - Likes/Dislikes (user id / content name / content id / content type / like / dislike) (default values = false)
+  - Watchlist (user id / content name / content id / content type) 
+
+  -> content id has to be unique related to show or movie content type
+
+5. linear gradient on movie hero based on a color from the hero image
 
 ---------------------
 tmdb image sizes

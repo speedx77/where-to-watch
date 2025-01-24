@@ -303,9 +303,107 @@ app.get("/show/:id", async (req,res) => {
 
 app.get("/movie/:id", async (req,res) => {
     let id = req.params.id
-    res.status(200).send(id)
+    let detailPagePackage;
+
+
+    try{
+
+        var detailResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            try {
+
+                var providerResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/watch/providers`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                })
+
+                
+                try {
+
+                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/images`, {
+                            headers : {
+                                "accept" : "application/json",
+                                "Authorization" : `Bearer ${tmdbKey}`
+                            }
+                        }
+                    )
+
+                    //types = flatrate, buy, ads (see providers example)
+                    /*
+                    id: showResult[i].show.ids.tmdb,
+                            popularity: detailResponse.data.popularity,
+                            type: showResult[i].type,
+                            year : showResult[i].show.year,
+                            title : showResult[i].show.title,
+                            description : detailResponse.data.overview,
+                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`         
+                            */
+
+                            detailPagePackage = {
+                                id: id,
+                                type: "Movie",
+                                premiere_date: detailResponse.data.release_date || null,
+                                title: detailResponse.data.title || null,
+                                tagline: detailResponse.data.tagline || null,
+                                description: detailResponse.data.overview || null,
+                                genres: detailResponse.data.genres || null,
+                                poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                                backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
+                                providers: providerResponse.data.results.US
+        
+                            }
+                    
+
+                } catch (error) {
+                    console.log(error)
+                }
+
+
+            } catch(error) {
+                console.log(error)
+            }
+
+    } catch(error) {
+        console.log(error)
+    }
+
+    
+
+
+    //res.status(200).send(detailPagePackage)
+    res.status(200).render("movie-detail.ejs", {detailPage : detailPagePackage})
 })
 
+app.post("/like", async (req, res) =>{
+    const userId = req.body.userId
+    const like = req.body.isLiked;
+    const contentName = req.body.contentName;
+    const contentType = req.body.contentType;
+    const contentId = req.body.contentId;
+
+    //console.log(like)
+    //INSERT INTO likes () VALUES ($1 $2 $3 $4) WHERE userId=$5
+});
+
+app.post("/like", async (req, res) =>{
+    const userId = req.body.userId
+    const disLike = req.body.isLiked;
+    const contentName = req.body.contentName;
+    const contentType = req.body.contentType;
+    const contentId = req.body.contentId;
+
+    //console.log(like)
+    //INSERT INTO likes () VALUES ($1 $2 $3 $4) WHERE userId=$5
+    //UPDATE items SET dislike to opposite?
+})
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
