@@ -318,6 +318,15 @@ body {
     padding: 10px;
 }
 
+.loginArea {
+    border-radius: 8px;
+    background-color: rgba(125, 18, 187, 0.2);
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+}
+
+
 #emailBar {
     width: 50%;
 }

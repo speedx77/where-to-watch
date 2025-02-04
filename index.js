@@ -42,9 +42,20 @@ app.get("/", async (req, res) => {
     res.status(200).render("home.ejs")
 });
 
-app.get("/signup", async(req, res) => {
+app.get("/home", async (req, res) => {
+    res.status(200).render("home.ejs")
+})
 
+app.get("/signup", async(req, res) => {
     res.status(200).render("signup.ejs")
+})
+
+app.get("/login", async(req, res) => {
+    res.render("login.ejs", {error: req.session.messages});
+})
+
+app.get("/testResult", async (req, res) => {
+    res.render("results.ejs")
 })
 
 app.post("/register", async(req, res) => {
@@ -90,14 +101,189 @@ app.post("/register", async(req, res) => {
     }
 })
 
-app.get("/login", async(req, res) => {
-    res.status(200).render("login.ejs")
-})
+
+app.get("/show/:id", async (req,res) => {
+    let id = req.params.id
+    let detailPagePackage;
 
 
-app.get("/testResult", async (req, res) => {
-    res.render("results.ejs")
+    try{
+
+        var detailResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            try {
+
+                var providerResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                })
+
+                
+                try {
+
+                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/images`, {
+                            headers : {
+                                "accept" : "application/json",
+                                "Authorization" : `Bearer ${tmdbKey}`
+                            }
+                        }
+                    )
+
+                    //types = flatrate, buy, ads (see providers example)
+                    /*
+                    id: showResult[i].show.ids.tmdb,
+                            popularity: detailResponse.data.popularity,
+                            type: showResult[i].type,
+                            year : showResult[i].show.year,
+                            title : showResult[i].show.title,
+                            description : detailResponse.data.overview,
+                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
+                    */
+                    detailPagePackage = {
+                        id: id,
+                        type: "Show",
+                        premiere_date: detailResponse.data.first_air_date || null,
+                        title: detailResponse.data.name || null,
+                        tagline: detailResponse.data.tagline || null,
+                        description: detailResponse.data.overview || null,
+                        genres: detailResponse.data.genres || null,
+                        poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                        backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
+                        providers: providerResponse.data.results.US
+
+                    }
+
+                    console.log(detailPagePackage);
+
+
+                } catch (error) {
+                    console.log(error)
+                }
+
+
+            } catch(error) {
+                console.log(error)
+            }
+
+    } catch(error) {
+        console.log(error)
+    }
+
+    
+
+    //res.status(200).send(detailPagePackage)
+    res.status(200).render("show-detail.ejs", {detailPage : detailPagePackage})
 })
+
+app.get("/movie/:id", async (req,res) => {
+    let id = req.params.id
+    let detailPagePackage;
+
+
+    try{
+
+        var detailResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                }
+            )
+
+            try {
+
+                var providerResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/watch/providers`, {
+                    headers : {
+                        "accept" : "application/json",
+                        "Authorization" : `Bearer ${tmdbKey}`
+                    }
+                })
+
+                
+                try {
+
+                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/images`, {
+                            headers : {
+                                "accept" : "application/json",
+                                "Authorization" : `Bearer ${tmdbKey}`
+                            }
+                        }
+                    )
+
+                    //types = flatrate, buy, ads (see providers example)
+                    /*
+                    id: showResult[i].show.ids.tmdb,
+                            popularity: detailResponse.data.popularity,
+                            type: showResult[i].type,
+                            year : showResult[i].show.year,
+                            title : showResult[i].show.title,
+                            description : detailResponse.data.overview,
+                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`         
+                            */
+
+                            detailPagePackage = {
+                                id: id,
+                                type: "Movie",
+                                premiere_date: detailResponse.data.release_date || null,
+                                title: detailResponse.data.title || null,
+                                tagline: detailResponse.data.tagline || null,
+                                description: detailResponse.data.overview || null,
+                                genres: detailResponse.data.genres || null,
+                                poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                                backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
+                                providers: providerResponse.data.results.US || null
+        
+                            }
+                    
+
+                } catch (error) {
+                    console.log(error)
+                }
+
+
+            } catch(error) {
+                console.log(error)
+            }
+
+    } catch(error) {
+        console.log(error)
+    }
+
+    
+
+
+    //res.status(200).send(detailPagePackage)
+    res.status(200).render("movie-detail.ejs", {detailPage : detailPagePackage})
+});
+
+
+app.post(
+    "/login",
+    passport.authenticate("local", {
+        successRedirect: "/home",
+        failureRedirect: "/login",
+        failureMessage: "Invalid Credentials"
+    })
+    /* "/login",
+    passport.authenticate("local", {
+        successRedirect: "/",
+        failureRedirect: "/login",
+        failureMessage: "Invalid Credentials"
+    })
+    */
+
+    
+
+)
+
 
 app.post("/search", async (req, res) => {
     let searchTerm = req.body.searchTerm;
@@ -270,169 +456,6 @@ app.post("/search", async (req, res) => {
 
 })
 
-app.get("/show/:id", async (req,res) => {
-    let id = req.params.id
-    let detailPagePackage;
-
-
-    try{
-
-        var detailResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, {
-                    headers : {
-                        "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
-                    }
-                }
-            )
-
-            try {
-
-                var providerResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers`, {
-                    headers : {
-                        "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
-                    }
-                })
-
-                
-                try {
-
-                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/images`, {
-                            headers : {
-                                "accept" : "application/json",
-                                "Authorization" : `Bearer ${tmdbKey}`
-                            }
-                        }
-                    )
-
-                    //types = flatrate, buy, ads (see providers example)
-                    /*
-                    id: showResult[i].show.ids.tmdb,
-                            popularity: detailResponse.data.popularity,
-                            type: showResult[i].type,
-                            year : showResult[i].show.year,
-                            title : showResult[i].show.title,
-                            description : detailResponse.data.overview,
-                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
-                    */
-                    detailPagePackage = {
-                        id: id,
-                        type: "Show",
-                        premiere_date: detailResponse.data.first_air_date || null,
-                        title: detailResponse.data.name || null,
-                        tagline: detailResponse.data.tagline || null,
-                        description: detailResponse.data.overview || null,
-                        genres: detailResponse.data.genres || null,
-                        poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
-                        backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
-                        providers: providerResponse.data.results.US
-
-                    }
-
-                    console.log(detailPagePackage);
-
-
-                } catch (error) {
-                    console.log(error)
-                }
-
-
-            } catch(error) {
-                console.log(error)
-            }
-
-    } catch(error) {
-        console.log(error)
-    }
-
-    
-
-    //res.status(200).send(detailPagePackage)
-    res.status(200).render("show-detail.ejs", {detailPage : detailPagePackage})
-})
-
-app.get("/movie/:id", async (req,res) => {
-    let id = req.params.id
-    let detailPagePackage;
-
-
-    try{
-
-        var detailResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, {
-                    headers : {
-                        "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
-                    }
-                }
-            )
-
-            try {
-
-                var providerResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/watch/providers`, {
-                    headers : {
-                        "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
-                    }
-                })
-
-                
-                try {
-
-                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/images`, {
-                            headers : {
-                                "accept" : "application/json",
-                                "Authorization" : `Bearer ${tmdbKey}`
-                            }
-                        }
-                    )
-
-                    //types = flatrate, buy, ads (see providers example)
-                    /*
-                    id: showResult[i].show.ids.tmdb,
-                            popularity: detailResponse.data.popularity,
-                            type: showResult[i].type,
-                            year : showResult[i].show.year,
-                            title : showResult[i].show.title,
-                            description : detailResponse.data.overview,
-                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`         
-                            */
-
-                            detailPagePackage = {
-                                id: id,
-                                type: "Movie",
-                                premiere_date: detailResponse.data.release_date || null,
-                                title: detailResponse.data.title || null,
-                                tagline: detailResponse.data.tagline || null,
-                                description: detailResponse.data.overview || null,
-                                genres: detailResponse.data.genres || null,
-                                poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
-                                backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
-                                providers: providerResponse.data.results.US || null
-        
-                            }
-                    
-
-                } catch (error) {
-                    console.log(error)
-                }
-
-
-            } catch(error) {
-                console.log(error)
-            }
-
-    } catch(error) {
-        console.log(error)
-    }
-
-    
-
-
-    //res.status(200).send(detailPagePackage)
-    res.status(200).render("movie-detail.ejs", {detailPage : detailPagePackage})
-});
-
-
 
 app.post("/like", async (req, res) =>{
     const userId = req.body.userId
@@ -457,13 +480,16 @@ app.post("/like", async (req, res) =>{
     //UPDATE items SET dislike to opposite?
 })
 
-passport.use("local",
-    new Strategy(async function verify(email, password, cb) {
+passport.use(
+    "local",
+    new Strategy({
+        usernameField: "email",
+        passwordField: "pwd"
+    }, async function verify(username, password, cb) {
         try{
-            const checkEmails = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-
-            if (result.rows.length > 0){
-                const user = result.rows[0];
+            const checkEmails = await db.query("SELECT * FROM users WHERE email = $1", [username]);
+            if (checkEmails.rows.length > 0){
+                const user = checkEmails.rows[0];
                 const storedHashPassword = user.password;
                 bcrypt.compare(password, storedHashPassword, (err, valid) => {
                     if (err){
@@ -476,7 +502,7 @@ passport.use("local",
                             return cb(null, false);
                         }
                     }
-                })
+                });
             } else {
                 return cb("User not found");
             }
@@ -486,6 +512,7 @@ passport.use("local",
     })
 )
 
+
 passport.serializeUser((user, cb) => {
     cb(null, user);
 });
@@ -493,6 +520,9 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((user, cb) => {
     cb(null, user);
 });
+
+
+
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
