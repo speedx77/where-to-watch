@@ -24,61 +24,68 @@
     <div id="providerArea" class="d-flex flex-column align-items-center mt-3">
     
         <h1>Where to Watch <span id="providerDetailName"><%= detailPage.title%></span></h1>
+
+        <% if(detailPage.providers) { %>
        
-        <% if (detailPage.providers.flatrate) { %>
-            <h2 class="mt-2">Subscription</h2>
-            <div id="subscriptionArea" class="d-flex gap-2">
-            <% detailPage.providers.flatrate.forEach((element) => { %>
-                <div class="subscription providerBlocks d-flex flex-column">
-                    <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                    <div><%= element.provider_name %></div>
+            <% if (detailPage.providers.flatrate) { %>
+                <h2 class="mt-2">Subscription</h2>
+                <div id="subscriptionArea" class="d-flex gap-2">
+                <% detailPage.providers.flatrate.forEach((element) => { %>
+                    <div class="subscription providerBlocks d-flex flex-column">
+                        <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                        <div><%= element.provider_name %></div>
+                    </div>
+                    
+            <% })%>
                 </div>
                 
-           <% })%>
-            </div>
-            
-        <% } %>
+            <% } %>
 
-        <% if (detailPage.providers.ads) { %>
-            <h2 class="mt-2">Free With Ads</h2>
-            <div id="adsArea" class="d-flex gap-2">
-                <% detailPage.providers.ads.forEach((element) => { %>
-                    <div class="ad providerBlocks d-flex flex-column">
-                        <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                        <div><%= element.provider_name %></div>
-                    </div>
-                    
-               <% })%>
-            </div>
-            
-        <% } %>
+            <% if (detailPage.providers.ads) { %>
+                <h2 class="mt-2">Free With Ads</h2>
+                <div id="adsArea" class="d-flex gap-2">
+                    <% detailPage.providers.ads.forEach((element) => { %>
+                        <div class="ad providerBlocks d-flex flex-column">
+                            <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                            <div><%= element.provider_name %></div>
+                        </div>
+                        
+                <% })%>
+                </div>
+                
+            <% } %>
 
-        <% if (detailPage.providers.rent) { %>
-            <h2 class="mt-2">For Rent</h2>
-            <div id="rentArea" class="d-flex gap-2">
-                <% detailPage.providers.rent.forEach((element) => { %>
-                    <div class="rent providerBlocks d-flex flex-column">
-                        <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                        <div><%= element.provider_name %></div>
-                    </div>
-                    
-               <% })%>
-            </div>
-            
-        <% } %>
+            <% if (detailPage.providers.rent) { %>
+                <h2 class="mt-2">For Rent</h2>
+                <div id="rentArea" class="d-flex gap-2">
+                    <% detailPage.providers.rent.forEach((element) => { %>
+                        <div class="rent providerBlocks d-flex flex-column">
+                            <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                            <div><%= element.provider_name %></div>
+                        </div>
+                        
+                <% })%>
+                </div>
+                
+            <% } %>
 
-        <% if (detailPage.providers.buy) { %>
-            <h2 class="mt-2">Purchase to Own</h2>
-            <div id="purchaseArea" class="d-flex gap-2">
-                <% detailPage.providers.buy.forEach((element) => { %>
-                    <div class="purchase providerBlocks d-flex flex-column">
-                        <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
-                        <div><%= element.provider_name %></div>
-                    </div>
-               <% })%>
-            </div>
-            
-        <% } %>
+            <% if (detailPage.providers.buy) { %>
+                <h2 class="mt-2">Purchase to Own</h2>
+                <div id="purchaseArea" class="d-flex gap-2">
+                    <% detailPage.providers.buy.forEach((element) => { %>
+                        <div class="purchase providerBlocks d-flex flex-column">
+                            <img class="provider" src="https://image.tmdb.org/t/p/w92<%= element.logo_path %>"/>
+                            <div><%= element.provider_name %></div>
+                        </div>
+                <% })%>
+                </div>
+                
+            <% } %>
+        <% }  else {%>
+
+            <h2 class="mt-5">We Don't Know &#128514</h2>
+
+            <% } %>
     </div>
 </div>
 

@@ -3,50 +3,98 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import axios from "axios";
 import {tmdbKey, traktClientId} from "./secrets/secrets.js";
+import bcrypt from "bcrypt";
+import passport from "passport";
+import { Strategy } from "passport-local";
+import session from "express-session";
+import env from "dotenv"
 
 const app = express();
 const port = 3001;
+env.config();
+const salt = Number(process.env.SALT);
 
-const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "where_to_watch",
-    password: "test123",
-    port: 5432,
-});
-//db.connect();
-
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+const db = new pg.Client({
+    user: process.env.PG_USER,
+    host: process.env.PG_HOST,
+    database: process.env.PG_DATABASE,
+    password: process.env.PG_PASSWORD,
+    port: process.env.PG_PORT,
+});
+db.connect();
+
+//---------------------------------------------
 
 app.get("/", async (req, res) => {
     res.status(200).render("home.ejs")
 });
 
-/*
-    search using watchNode
-    Return list of items 
-        with these items query 1. imdb 2. tmdb
-    make calls for these items and pull metadata
-    return metadata
+app.get("/signup", async(req, res) => {
 
-    display metadata on FE
+    res.status(200).render("signup.ejs")
+})
 
-    ----------- new ideas 1/14 ------------
+app.post("/register", async(req, res) => {
+    const email = req.body.email;
+    const password = req.body.pwd;
 
-    search using traktAPI, find tmdb id
-    display results via
-        tmdb show/movie image via id
-        tmdb show detail via id
-    click on /show/id or /movie/id content/id
-        display tmdb show/movie image via id
-        tmdb show detail via id
-        tmdb where to watch
-        tmdb vendor images
+    console.log(password)
+    console.log(salt)
 
-        -we're not linking out to external service
+    try {
+        const checkEmails = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
-*/
+        console.log(checkEmails.rows)
+
+        if (checkEmails.rows.length > 0){
+            res.status(200).render("signup.ejs", {error: "Email Already Exists"})
+        } else {
+            bcrypt.hash(password, salt, async (err, hash) => {
+                if (err){
+                    console.log("Error Hashing Password", err);
+                } else {
+
+                    try {
+                        const result = await db.query("INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *", 
+                            [email, hash]
+                        );
+                        const user = result.rows[0];
+                        req.login(user, (err) => {
+                            console.log('success');
+                            res.redirect("/")
+                        })
+
+                    } catch(error){
+                        console.log(error)
+                    }
+
+                }
+            })
+        }
+
+    } catch(error){
+        console.log(error)
+    }
+})
+
+app.get("/login", async(req, res) => {
+    res.status(200).render("login.ejs")
+})
+
+
 app.get("/testResult", async (req, res) => {
     res.render("results.ejs")
 })
@@ -281,6 +329,9 @@ app.get("/show/:id", async (req,res) => {
 
                     }
 
+                    console.log(detailPagePackage);
+
+
                 } catch (error) {
                     console.log(error)
                 }
@@ -295,7 +346,6 @@ app.get("/show/:id", async (req,res) => {
     }
 
     
-
 
     //res.status(200).send(detailPagePackage)
     res.status(200).render("show-detail.ejs", {detailPage : detailPagePackage})
@@ -357,7 +407,7 @@ app.get("/movie/:id", async (req,res) => {
                                 genres: detailResponse.data.genres || null,
                                 poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
                                 backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
-                                providers: providerResponse.data.results.US
+                                providers: providerResponse.data.results.US || null
         
                             }
                     
@@ -380,7 +430,9 @@ app.get("/movie/:id", async (req,res) => {
 
     //res.status(200).send(detailPagePackage)
     res.status(200).render("movie-detail.ejs", {detailPage : detailPagePackage})
-})
+});
+
+
 
 app.post("/like", async (req, res) =>{
     const userId = req.body.userId
@@ -404,6 +456,43 @@ app.post("/like", async (req, res) =>{
     //INSERT INTO likes () VALUES ($1 $2 $3 $4) WHERE userId=$5
     //UPDATE items SET dislike to opposite?
 })
+
+passport.use("local",
+    new Strategy(async function verify(email, password, cb) {
+        try{
+            const checkEmails = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+
+            if (result.rows.length > 0){
+                const user = result.rows[0];
+                const storedHashPassword = user.password;
+                bcrypt.compare(password, storedHashPassword, (err, valid) => {
+                    if (err){
+                        console.error("Error comparing passwords:", err);
+                        return cb(err);
+                    } else {
+                        if (valid) {
+                            return cb(null, user);
+                        } else {
+                            return cb(null, false);
+                        }
+                    }
+                })
+            } else {
+                return cb("User not found");
+            }
+        } catch(error) {
+            console.log(error)
+        }
+    })
+)
+
+passport.serializeUser((user, cb) => {
+    cb(null, user);
+});
+
+passport.deserializeUser((user, cb) => {
+    cb(null, user);
+});
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

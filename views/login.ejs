@@ -1,0 +1,25 @@
+<%- include("partials/header.ejs") %>
+
+<div id="loginContainer" style="margin-top: 300px;">
+    <div><h1>Did you forget Where to Watch <span style="color: rgb(131, 9, 231)" id="headerTitle">The Walking Dead<span style="color: black; white-space: pre;"> ?</span></span></h1></div>
+    <h3>We'll remind you <span style="color: rgb(125, 18, 187)">goofy!</span> Log In today</h3>
+    <form id="signUpForm" class="d-flex flex-column justify-content-center align-items-start signUpArea" action="/register" method="post">
+        <label for="emailBar">Email <small id="emailAlert" style="color: red; font-weight: bold; display: none; transition: display 1s;">Email in Use</small></label>
+        <input type="text" id="emailBar" name="email" type="email" required>
+        
+        <label for="pwdBar">Password <small id="pwdAlert" style="color: red; font-weight: bold; display: none; transition: display 1s;">Passwords Must Match!</small></label>
+        <input id="pwdBar" name="pwd" type="password" required>
+        
+        <div class="d-flex align-items-center mt-3 gap-4" style="width: 100%;"> 
+            <input type="submit" id="loginButton" value="Login"> 
+            <div id="pwdReveal" class="d-flex justify-content-center align-items-center">
+                <img id="pwdRevealImg" src="assets/hide.png" style="height: 32px; width: 32px;"> 
+                <div id="pwdRevealText" class="ms-1">Show Password</div>
+            </div>
+        </div>
+
+    </form>
+    <div class="d-flex gap-5 justify-content-center mt-3"> <a class="loginButtonSignUp" href="/signup">Don't have an account? Sign Up</a></div>
+</div>
+
+<script src="/scripts/titleScroll.js"></script>
