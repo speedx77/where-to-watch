@@ -12,7 +12,7 @@ function beginHeaderTitleAnimation() {
     setTimeout(()=> {
         selectedTitle = Math.floor(Math.random() * headerTitles.length)
         let finalTitle = preventDupeTitle(selectedTitle)
-        console.log(selectedTitle);
+        //console.log(selectedTitle);
         headerShift.innerHTML = `${headerTitles[finalTitle]} <span style="color: black; white-space: pre;"> ?</span>`
         dupeSelectedTitle = finalTitle;
     }, 2500);

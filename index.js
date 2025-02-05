@@ -8,11 +8,15 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import session from "express-session";
 import env from "dotenv"
+import multer from "multer";
+import path from "path";
+
 
 const app = express();
 const port = 3001;
 env.config();
 const salt = Number(process.env.SALT);
+const upload = multer({ dest: "uploads/" });
 
 app.use(
     session({
@@ -42,11 +46,44 @@ db.connect();
 //---------------------------------------------
 
 app.get("/", async (req, res) => {
-    res.status(200).render("home.ejs")
+
+    let isUserAutheneticated = false;
+
+    if(req.isAuthenticated()){
+        isUserAutheneticated = true;
+        res.status(200).render("home.ejs", {auth: isUserAutheneticated});
+    } else {
+        isUserAutheneticated = false;
+        res.status(200).render("home.ejs", {auth: isUserAutheneticated});
+    }
+
 });
 
-app.get("/home", async (req, res) => {
-    res.status(200).render("home.ejs")
+app.get("/profile", async (req, res) => {
+    console.log(req.user)
+    if(req.isAuthenticated()){
+        const email = req.user.email;
+        var pfp = null;
+
+        try {
+            const pfpRead = await db.query("SELECT pfpfilename FROM users WHERE email = $1", [email])
+            if(pfpRead.rows[0].pfpfilename === null){
+                pfp = "assets/pfp.png";
+            } else{
+                //console.log(pfpRead.rows[0].pfp)
+                pfp = `/image/${pfpRead.rows[0].pfpfilename}`;
+            }
+        } catch(error){
+            console.log(error)
+        }
+
+        //console.log(pfp)
+
+        res.status(200).render("profile.ejs", {email : email, pfp: pfp})
+    } else{
+        res.redirect("/")
+    }
+ 
 })
 
 app.get("/signup", async(req, res) => {
@@ -268,10 +305,11 @@ app.get("/movie/:id", async (req,res) => {
 });
 
 
+
 app.post(
     "/login",
     passport.authenticate("local", {
-        successRedirect: "/home",
+        successRedirect: "/",
         failureRedirect: "/login",
         failureMessage: "Invalid Credentials"
     })
@@ -457,6 +495,46 @@ app.post("/search", async (req, res) => {
     //res.status(200).send(searchPackage)
     res.status(200).render("results.ejs", {wasSearchTermFound : wasSearchTermFound, searchData : searchPackage});
 
+})
+
+app.post("/changepfp", upload.single('newPfp'), async (req, res, next) => {
+    console.log(req.file)
+    const pfpFilename = req.file.filename;
+    const pfpMimetype = req.file.mimetype;
+    const pfpfilepath = req.file.path;
+    //console.log(pfp)
+    //console.log("filename:", pfp.filename)
+
+    try{
+        const pfpInsert = await db.query("UPDATE users SET (pfpfilename, pfpmimetype, pfpfilepath) = ($1, $2, $3) WHERE email = $4", 
+            [pfpFilename, pfpMimetype, pfpfilepath, req.user.email]);
+        res.redirect("/profile")
+    } catch (error){
+        console.log(error)
+    }
+})
+
+app.get("/image/:filename", async (req, res) => {
+    const filename = req.params.filename;
+
+    
+    try{
+        const fileSearch = await db.query("SELECT * FROM users WHERE pfpfilename = $1", [filename]);
+
+        if(fileSearch.rows.length > 0){
+            const dirname = path.resolve();
+            const fullfilepath = path.join(dirname, fileSearch.rows[0].pfpfilepath)
+            console.log(fullfilepath)
+            res.type(fileSearch.rows[0].pfpmimetype).sendFile(fullfilepath);
+        } else{
+            res.send("not found")
+        }
+
+    } catch(error){
+        console.log(error)
+    }
+    
+    
 })
 
 
