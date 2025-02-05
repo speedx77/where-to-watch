@@ -19,6 +19,9 @@ app.use(
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
+        cookie : {
+            maxAge: 1000 * 60 * 60 * 24 //24 hrs
+        }
     })
 );
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -504,7 +507,7 @@ passport.use(
                     }
                 });
             } else {
-                return cb("User not found");
+                return cb(null, false);
             }
         } catch(error) {
             console.log(error)
