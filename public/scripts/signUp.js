@@ -1,5 +1,5 @@
 var pwd = document.querySelector("#pwdBar");
-
+var confirmPwd = document.querySelector("#confirmPwdBar")
 var signUp = document.querySelector("#signUpForm");
 var alert = document.querySelector("#pwdAlert")
 var reveal = document.querySelector("#pwdReveal")

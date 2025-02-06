@@ -1,11 +1,40 @@
-html {
+
+body,html {
+    background-color: #ececec;
+    height: 100vh;
 }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ececec;
+.nav-color{
+    background-color: rgba(125, 18, 187,0.5);
+}
+
+.border-color {
+    --bs-border-color: rgb(125, 18, 187);
+}
+
+.nav-animation {
+    color: white;
+    font-weight: bold;
+}
+
+#title{
+    text-decoration: none;
+    color: white;
+    border: 2px solid white;
+    border-radius: 8px;
+    padding: 3px;
+    box-shadow: black -5px -5px;
+    background-color: rgb(125, 18, 187);
+    font-weight: bold;
+}
+
+#pfpNav {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 #headerTitle {
@@ -41,6 +70,8 @@ body {
 #searchContainer {
     display: flex;
     flex-direction: column;
+    width: 50%;
+    
 }
 
 #searchBar {
@@ -326,6 +357,9 @@ body {
     padding: 10px;
 }
 
+#nameBar {
+    width: 50%;
+}
 
 #emailBar {
     width: 50%;
@@ -385,3 +419,4 @@ body {
     color: white;
     font-size: 14px;
   }
+

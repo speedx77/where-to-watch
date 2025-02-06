@@ -46,25 +46,12 @@ db.connect();
 //---------------------------------------------
 
 app.get("/", async (req, res) => {
-
     let isUserAutheneticated = false;
 
     if(req.isAuthenticated()){
-        isUserAutheneticated = true;
-        res.status(200).render("home.ejs", {auth: isUserAutheneticated});
-    } else {
-        isUserAutheneticated = false;
-        res.status(200).render("home.ejs", {auth: isUserAutheneticated});
-    }
-
-});
-
-app.get("/profile", async (req, res) => {
-    console.log(req.user)
-    if(req.isAuthenticated()){
         const email = req.user.email;
         var pfp = null;
-
+        isUserAutheneticated = true;
         try {
             const pfpRead = await db.query("SELECT pfpfilename FROM users WHERE email = $1", [email])
             if(pfpRead.rows[0].pfpfilename === null){
@@ -76,10 +63,46 @@ app.get("/profile", async (req, res) => {
         } catch(error){
             console.log(error)
         }
+        res.status(200).render("home.ejs", {auth: isUserAutheneticated, pfp: pfp});
 
-        //console.log(pfp)
 
-        res.status(200).render("profile.ejs", {email : email, pfp: pfp})
+    } else {
+        isUserAutheneticated = false;
+        res.status(200).render("home.ejs", {auth: isUserAutheneticated});
+    }
+
+});
+
+app.get('/test', (req, res) => {
+    res.render("test.ejs")
+})
+
+app.get("/profile", async (req, res) => {
+    console.log(req.user)
+    let isUserAutheneticated = false;
+
+    if(req.isAuthenticated()){
+        isUserAutheneticated = true
+        const email = req.user.email;
+        var pfp = null;
+        var name = null;
+
+        try {
+            const pfpRead = await db.query("SELECT displayname, pfpfilename FROM users WHERE email = $1", [email])
+            name = pfpRead.rows[0].displayname;
+            if(pfpRead.rows[0].pfpfilename === null){
+                pfp = "assets/pfp.png";
+            } else{
+                //console.log(pfpRead.rows[0].pfp)
+                pfp = `/image/${pfpRead.rows[0].pfpfilename}`;
+            }
+        } catch(error){
+            console.log(error)
+        }
+
+        console.log(name)
+
+        res.status(200).render("profile.ejs", {auth: isUserAutheneticated, email : email, pfp: pfp, name: name})
     } else{
         res.redirect("/")
     }
@@ -98,9 +121,19 @@ app.get("/testResult", async (req, res) => {
     res.render("results.ejs")
 })
 
+app.get("/logout", (req, res) => {
+    req.logout(function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/");
+    });
+  });
+
 app.post("/register", async(req, res) => {
     const email = req.body.email;
     const password = req.body.pwd;
+    const name = req.body.name;
 
     console.log(password)
     console.log(salt)
@@ -119,8 +152,8 @@ app.post("/register", async(req, res) => {
                 } else {
 
                     try {
-                        const result = await db.query("INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *", 
-                            [email, hash]
+                        const result = await db.query("INSERT INTO users (displayname, email, password) VALUES ($1, $2, $3) RETURNING *", 
+                            [name, email, hash]
                         );
                         const user = result.rows[0];
                         req.login(user, (err) => {
