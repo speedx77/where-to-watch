@@ -42,6 +42,30 @@ In the Age of Streaming, Where To Watch is a search engine that helps users find
 
 5. linear gradient on movie hero based on a color from the hero image
 
+6. Remove Sign in and Login from nav bar when user.isAuthenticated
+
+7. fix center div on most pages
+
+8. add watchlist icon
+
+9. watchlist likes and dislikes tables and flow
+
+10. add recent searches
+
+11. Welcome [USER] on homepage
+
+----------
+
+POST MVP
+
+RECOMMENDATIONS VIA ML
+
+RELATED CONTENT
+
+REVIEWS AND STARS (OR OUT OF 10)
+
+MOST SEARCHED?
+
 ---------------------
 tmdb image sizes
 

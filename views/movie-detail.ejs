@@ -2,10 +2,10 @@
 <div id="detailPageContainer" class="d-flex flex-column">
     <div id="heroContainer">
         <div id="hero" class="d-flex justify-content-center align-items-center gap-3" style="background-image: linear-gradient(-180deg, rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 0.3) 100%), url('<%= detailPage.backdrop%>');">
-
             <img id="heroPoster" src="<%= detailPage.poster%>">
             <div id="heroInfo"  class="d-flex flex-column justify-content-center">
-                <h1 id="heroTitle" data-content-type="<%= detailPage.type%>"><%= detailPage.title%> - <small><%= detailPage.premiere_date.split("-")[0]%></small></h1>
+                <h1 id="heroTitle" data-content-id="<%= detailPage.id%>" data-content-type="<%= detailPage.type%>" data-content-name="<%= detailPage.title%>">
+                    <%= detailPage.title%> - <small><%= detailPage.premiere_date.split("-")[0]%></small></h1>
                 <div class="d-flex gap-2">
                     <% detailPage.genres.forEach((element) => { %> 
                         <small class="heroGenre"><%= element.name %></small>
@@ -14,7 +14,18 @@
                 <h3 id="heroTagline" class="mt-2"><%= detailPage.tagline %></h3>
                 <p id="heroDescription"> <%= detailPage.description%></p>
                 <div id="likeArea" class="d-flex gap-3">
-                    <div id="like"></div><div id="dislike"></div>
+                    <div id="like"></div>
+                    <div id="dislike"></div>
+                    <% if(locals.auth) { %>
+                    <button type=button onClick="editWatchlist()" id="watchlist" class="d-flex align-items-center gap-1 p-1">
+                        <div id="watchlistStatus" style="background-image: url('/assets/add.png')"></div>
+                        <div id="watchlistText">Add to Watchlist</div>
+                    </button>
+                    <% } else {%>
+                        <a id="watchlist" href="/login" class="d-flex align-items-center gap-1 p-1">
+                            <div id="watchlistText">Login to Make a Watchlist</div>
+                        </a>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -90,3 +101,4 @@
 </div>
 
 
+<script src="/scripts/detailPage.js"></script>

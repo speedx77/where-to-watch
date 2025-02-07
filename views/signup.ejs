@@ -1,32 +1,34 @@
 <%- include("partials/header.ejs") %>
-
-<div id="signUpContainer" style="margin-top: 300px;">
-    <div><h1>Is it on <span style="color: rgb(131, 9, 231)" id="headerTitleProvider">Paramount+<span style="color: black; white-space: pre;">?</span></span></h1></div>
-    <h3>Sign up for <span style="color: rgb(131, 9, 231)">Where to Watch</span> to save a watchlist of your favorite shows and movies</h3>
-    <form id="signUpForm" class="d-flex flex-column justify-content-center align-items-start signUpArea" action="/register" method="post">
-        <label for="nameBar">Display Name <small><em>Not used for login</em></small></label>
-        <input type="text" id="nameBar" name="name" type="text" required>
-
-        <label for="emailBar">Email <small id="emailAlert" style="color: red; font-weight: bold;"><%= locals.error %></small></label>
-        <input type="text" id="emailBar" name="email" type="email" required>
-        
-        <label for="pwdBar">Password <small id="pwdAlert" style="color: red; font-weight: bold; display: none; transition: display 1s;">Passwords Must Match!</small></label>
-        <input id="pwdBar" name="pwd" type="password" required>
-        
-        <label for="confirmPwdBar">Confirm Password <small style="font-weight: bold">Please retype the same password</small></label>
-        <input id="confirmPwdBar" name="confirmPwd" type="password" required>
-        
-        <div class="d-flex align-items-center mt-3 gap-4" style="width: 100%;"> 
-            <input type="submit" id="registerButton" value="Register"> 
-            <div id="pwdReveal" class="d-flex justify-content-center align-items-center">
-                <img id="pwdRevealImg" src="assets/hide.png" style="height: 32px; width: 32px;"> 
-                <div id="pwdRevealText" class="ms-1">Show Password</div>
+<div class="pageContainer d-flex justify-content-center">
+    <div id="signUpContainer" style="margin-top: 300px;">
+        <div><h1>Is it on <span style="color: rgb(131, 9, 231)" id="headerTitleProvider">Paramount+<span style="color: black; white-space: pre;">?</span></span></h1></div>
+        <h3>Sign up for <span style="color: rgb(131, 9, 231)">Where to Watch</span> to save a watchlist of your favorite shows and movies</h3>
+        <form id="signUpForm" class="d-flex flex-column justify-content-center align-items-start signUpArea" action="/register" method="post">
+            <label for="nameBar">Display Name <small><em>Not used for login</em></small></label>
+            <input type="text" id="nameBar" name="name" type="text" required>
+    
+            <label for="emailBar">Email <small id="emailAlert" style="color: red; font-weight: bold;"><%= locals.error %></small></label>
+            <input type="text" id="emailBar" name="email" type="email" required>
+            
+            <label for="pwdBar">Password <small id="pwdAlert" style="color: red; font-weight: bold; display: none; transition: display 1s;">Passwords Must Match!</small></label>
+            <input id="pwdBar" name="pwd" type="password" required>
+            
+            <label for="confirmPwdBar">Confirm Password <small style="font-weight: bold">Please retype the same password</small></label>
+            <input id="confirmPwdBar" name="confirmPwd" type="password" required>
+            
+            <div class="d-flex align-items-center mt-3 gap-4" style="width: 100%;"> 
+                <input type="submit" id="registerButton" value="Register"> 
+                <div id="pwdReveal" class="d-flex justify-content-center align-items-center">
+                    <img id="pwdRevealImg" src="assets/hide.png" style="height: 32px; width: 32px;"> 
+                    <div id="pwdRevealText" class="ms-1">Show Password</div>
+                </div>
             </div>
-        </div>
-
-    </form>
-    <div class="d-flex gap-5 justify-content-center mt-3"> <a class="loginButtonSignUp" href="/login">Already Have an Account? Log In</a></div>
+    
+        </form>
+        <div class="d-flex gap-5 justify-content-center mt-3"> <a class="loginButtonSignUp" href="/login">Already Have an Account? Log In</a></div>
+    </div>
 </div>
+
 
 <script src="/scripts/providerScroll.js"></script>
 <script src="/scripts/signUp.js"></script>

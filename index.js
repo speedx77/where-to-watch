@@ -86,6 +86,10 @@ app.get("/profile", async (req, res) => {
         const email = req.user.email;
         var pfp = null;
         var name = null;
+        var watchlist = null;
+        var watchlistPackage = [];
+        const userId = req.user.userid;
+        console.log(userId);
 
         try {
             const pfpRead = await db.query("SELECT displayname, pfpfilename FROM users WHERE email = $1", [email])
@@ -96,13 +100,112 @@ app.get("/profile", async (req, res) => {
                 //console.log(pfpRead.rows[0].pfp)
                 pfp = `/image/${pfpRead.rows[0].pfpfilename}`;
             }
+
         } catch(error){
             console.log(error)
         }
 
-        console.log(name)
+        
+        //await fetch("http:localhost:3001/watchlist").then(response=> response.json()).then(data => {watchlist = data})
+        try {
+            const watchlistLookup = await db.query("SELECT * FROM watchlist WHERE userId = $1", [userId])
+            watchlist = watchlistLookup.rows[0];
+            /*replace async in foreach with promiseAll
+            if(watchlistLookup.rows.length > 0){
+                watchlistLookup.rows.forEach(async (element)=> {
+                    if (element.type === 'Show'){
+                        try{
+                            var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${element.contentid}/images`, {
+                                headers : {
+                                    "accept" : "application/json",
+                                    "Authorization" : `Bearer ${tmdbKey}`
+                                }
+                            }
+                        )
+        
+                        watchlistPackage.push({
+                            contentid: element.contentid,
+                            type: element.type,
+                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+    
+                        })
+                        console.log("in try:", watchlistPackage)
+                        } catch(error){
+                            console.log(error)
+                        }
+                    } else if (element.type === 'Movie'){
+                        try{
+                            var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${element.contentid}/images`, {
+                                headers : {
+                                    "accept" : "application/json",
+                                    "Authorization" : `Bearer ${tmdbKey}`
+                                }
+                            }
+                        )
+                        } catch(error){
+                            console.log(error)
+                        }
+                    }
+                    console.log("in for each", watchlistPackage)
 
-        res.status(200).render("profile.ejs", {auth: isUserAutheneticated, email : email, pfp: pfp, name: name})
+                    
+
+                })
+
+                console.log("in if block:", watchlistPackage)
+
+            } else{
+            }
+            */
+           for(var i = 0; i < watchlistLookup.rows.length; i++){
+            if (watchlistLookup.rows[i].type === 'Show'){
+                try{
+                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${watchlistLookup.rows[i].contentid}/images`, {
+                        headers : {
+                            "accept" : "application/json",
+                            "Authorization" : `Bearer ${tmdbKey}`
+                        }
+                    }
+                )
+
+                watchlistPackage.push({
+                    contentid: watchlistLookup.rows[i].contentid,
+                    type: watchlistLookup.rows[i].type,
+                    poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+
+                })
+                //console.log("in try:", watchlistPackage)
+                } catch(error){
+                    console.log(error)
+                }
+            } else if (watchlistLookup.rows[i].type === 'Movie'){
+                try{
+                    var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${watchlistLookup.rows[i].contentid}/images`, {
+                        headers : {
+                            "accept" : "application/json",
+                            "Authorization" : `Bearer ${tmdbKey}`
+                        }
+                    }
+                )
+
+                watchlistPackage.push({
+                    contentid: watchlistLookup.rows[i].contentid,
+                    type: watchlistLookup.rows[i].type,
+                    poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+
+                })
+                } catch(error){
+                    console.log(error)
+                }
+            }
+           }
+        } catch(error){
+            console.log(error)
+        }
+
+
+        console.log("in final:", watchlistPackage)
+        res.status(200).render("profile.ejs", {auth: isUserAutheneticated, email : email, pfp: pfp, name: name, watchlist: watchlistPackage})
     } else{
         res.redirect("/")
     }
@@ -110,11 +213,26 @@ app.get("/profile", async (req, res) => {
 })
 
 app.get("/signup", async(req, res) => {
-    res.status(200).render("signup.ejs")
+    let isUserAutheneticated = false;
+
+    if(req.isAuthenticated()){
+        isUserAutheneticated = true;
+        res.redirect("/")
+    } else{
+        res.status(200).render("signup.ejs")
+    }
 })
 
 app.get("/login", async(req, res) => {
-    res.render("login.ejs", {error: req.session.messages});
+    let isUserAutheneticated = false;
+
+    if(req.isAuthenticated()){
+        isUserAutheneticated = true;
+        res.redirect("/")
+    } else{
+        res.render("login.ejs", {error: req.session.messages});
+    }
+    
 })
 
 app.get("/testResult", async (req, res) => {
@@ -129,6 +247,93 @@ app.get("/logout", (req, res) => {
       res.redirect("/");
     });
   });
+
+app.get("/watchlist", async (req, res) => {
+    let isAuthenticated = false;
+    if(req.isAuthenticated()){
+        const userId = req.user.userid
+        try {
+            const watchlistLookup = await db.query("SELECT * FROM watchlist WHERE userId = $1", [userId])
+            res.send(watchlistLookup.rows);
+        } catch(error){
+            console.log(error)
+        }
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
+        
+});
+
+app.get("/likes", async (req, res) =>{
+    let isAuthenticated = false;
+    if(req.isAuthenticated()){
+        const userId = req.user.userid
+        try {
+            const watchlistLookup = await db.query("SELECT * FROM likes WHERE userId = $1", [userId])
+            res.send(watchlistLookup.rows);
+        } catch(error){
+            console.log(error)
+        }
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
+})
+
+app.post("/add/likes", async (req, res)=> {
+
+})
+
+app.post("/delete/likes", async (req, res) => {
+    
+})
+
+app.post("/add/watchlist", async (req,res) =>{
+    const type = req.body.type;
+    const name = req.body.name;
+    const id = req.body.id;
+    let isAuthenticated = false;
+
+    if(req.isAuthenticated()){
+        try{
+            const userId = req.user.userid;
+            const watchlistInsert = await db.query("INSERT INTO watchlist (userId, contentname, contentid, type) VALUES ($1, $2, $3, $4)",
+                [userId, name, id, type])
+            res.status(200).send("Content Inserted")
+        } catch(error){
+            console.log(error)
+        }
+        
+        
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
+});
+
+app.post("/delete/watchlist", async (req,res) =>{
+    const type = req.body.type;
+    const id = req.body.id;
+    let isAuthenticated = false;
+
+    if(req.isAuthenticated()){
+        try{
+            const userId = req.user.userid;
+            console.log(userId);
+            console.log(type);
+            console.log(id);
+            const watchlistInsert = await db.query("DELETE FROM watchlist WHERE userId = $1 AND contentid = $2 AND type= $3",
+                [userId, id, type])
+            res.status(200).send("Content Deleted")
+        } catch(error){
+            console.log(error)
+        }
+        
+        
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
+});
+
+    
 
 app.post("/register", async(req, res) => {
     const email = req.body.email;
@@ -178,7 +383,24 @@ app.post("/register", async(req, res) => {
 app.get("/show/:id", async (req,res) => {
     let id = req.params.id
     let detailPagePackage;
+    let isAuthenticated = false;
 
+    if(req.isAuthenticated()){
+        const email = req.user.email;
+        var pfp = null;
+        isAuthenticated = true;
+        try {
+            const pfpRead = await db.query("SELECT pfpfilename FROM users WHERE email = $1", [email])
+            if(pfpRead.rows[0].pfpfilename === null){
+                pfp = "assets/pfp.png";
+            } else{
+                //console.log(pfpRead.rows[0].pfp)
+                pfp = `/image/${pfpRead.rows[0].pfpfilename}`;
+            }
+        } catch(error){
+            console.log(error)
+        }
+    } 
 
     try{
 
@@ -249,17 +471,33 @@ app.get("/show/:id", async (req,res) => {
     } catch(error) {
         console.log(error)
     }
-
     
 
     //res.status(200).send(detailPagePackage)
-    res.status(200).render("show-detail.ejs", {detailPage : detailPagePackage})
+    res.status(200).render("show-detail.ejs", {auth: isAuthenticated, pfp: pfp, detailPage : detailPagePackage})
 })
 
 app.get("/movie/:id", async (req,res) => {
     let id = req.params.id
     let detailPagePackage;
+    let isAuthenticated = false;
 
+    if(req.isAuthenticated()){
+        const email = req.user.email;
+        var pfp = null;
+        isAuthenticated = true;
+        try {
+            const pfpRead = await db.query("SELECT pfpfilename FROM users WHERE email = $1", [email])
+            if(pfpRead.rows[0].pfpfilename === null){
+                pfp = "assets/pfp.png";
+            } else{
+                //console.log(pfpRead.rows[0].pfp)
+                pfp = `/image/${pfpRead.rows[0].pfpfilename}`;
+            }
+        } catch(error){
+            console.log(error)
+        }
+    } 
 
     try{
 
@@ -334,7 +572,7 @@ app.get("/movie/:id", async (req,res) => {
 
 
     //res.status(200).send(detailPagePackage)
-    res.status(200).render("movie-detail.ejs", {detailPage : detailPagePackage})
+    res.status(200).render("movie-detail.ejs", {auth: isAuthenticated, pfp: pfp, detailPage : detailPagePackage})
 });
 
 
@@ -570,7 +808,7 @@ app.get("/image/:filename", async (req, res) => {
     
 })
 
-
+/*
 app.post("/like", async (req, res) =>{
     const userId = req.body.userId
     const like = req.body.isLiked;
@@ -593,6 +831,7 @@ app.post("/like", async (req, res) =>{
     //INSERT INTO likes () VALUES ($1 $2 $3 $4) WHERE userId=$5
     //UPDATE items SET dislike to opposite?
 })
+*/
 
 passport.use(
     "local",

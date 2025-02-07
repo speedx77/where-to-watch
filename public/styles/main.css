@@ -254,7 +254,8 @@ body,html {
     width: 250px;
     border-radius: 8px;
     border: 2px solid white;
-    box-shadow: 0px 0px 5px 5px black}
+    box-shadow: 0px 0px 5px 5px black;
+}
 
 #heroInfo{
     height: 500px;
@@ -328,7 +329,17 @@ body,html {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    border: none;
+    background-color: transparent;
+    transition: background-image 250ms;
+
 }
+
+#like:hover {
+    background-image: url('../assets/like-purple-outline.png');
+}
+
+
 
 #dislike{
     width: 32px;
@@ -337,7 +348,42 @@ body,html {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    transition: background-image 250ms;
 }
+
+#dislike:hover {
+    background-image: url('../assets/dislike-purple-outline.png');
+}
+
+#watchlist{
+    height: 32px;
+    width: fit-content;
+    background-color: #7d12bb;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;    
+    border: 2px solid black;
+    box-shadow: black 5px -5px;
+    text-decoration: none;
+    transition: box-shadow 1s, border 1s;
+}
+
+#watchlistStatus{
+    height: 25px;
+    width: 25px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: drop-shadow(0px 1000px 0 white);
+    transform: translateY(-1000px);
+    transition: background-image 500ms;
+}
+
+#watchlist:hover {
+    box-shadow: black 2px -2px;
+    border: 2px solid white;
+}
+
 
 /*--------------------------------------------*/
 
@@ -420,3 +466,26 @@ body,html {
     font-size: 14px;
   }
 
+
+  .watchlistPoster{
+    height: 187.5px;
+    width: 125px;
+    border-radius: 8px;
+    border: 2px solid white;
+    box-shadow: 0px 0px 2px 2px black;
+    transition: border 500ms;
+  }
+
+  .watchlistPoster:hover{
+    border: 3px solid rgb(131, 9, 231);
+  }
+
+  #watchlistArea{
+    
+  }
+
+  #watchlistCarousel{
+    width: 1000px;
+    height: 225px;
+    overflow-x: scroll;
+  }
