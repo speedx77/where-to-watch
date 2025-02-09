@@ -88,6 +88,9 @@ app.get("/profile", async (req, res) => {
         var name = null;
         var watchlist = null;
         var watchlistPackage = [];
+        var likePackage = [];
+        var dislikeList = null;
+        var dislikePackage = [];
         const userId = req.user.userid;
         console.log(userId);
 
@@ -203,9 +206,115 @@ app.get("/profile", async (req, res) => {
             console.log(error)
         }
 
+        try{
+            const likeLookup = await db.query("SELECT userId, contentname, contentid, type FROM likes WHERE liked=$1 AND userId=$2",
+                ['like', userId]);
+            let likeList = likeLookup.rows;
+
+            for(var i=0; i < likeList.length; i++){
+                if(likeList[i].type === 'Show'){
+
+                    try{
+                        var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${likeList[i].contentid}/images`, {
+                                headers : {
+                                    "accept" : "application/json",
+                                    "Authorization" : `Bearer ${tmdbKey}`
+                                }
+                            }
+                        )
+
+                        likePackage.push({
+                            contentid: likeList[i].contentid,
+                            type: likeList[i].type,
+                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                        })
+                    } catch(error){
+                        console.log(error)
+                    }
+                    
+                } else if(likeList[i].type === 'Movie') {
+                    try{
+                        var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${likeList[i].contentid}/images`, {
+                                headers : {
+                                    "accept" : "application/json",
+                                    "Authorization" : `Bearer ${tmdbKey}`
+                                }
+                            }
+                        )
+
+                        likePackage.push({
+                            contentid: likeList[i].contentid,
+                            type: likeList[i].type,
+                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                        })
+                    } catch(error){
+                        console.log(error)
+                    }
+                }
+            }
+
+
+        } catch(error){
+            console.log(error)
+        }
+
+        try{
+            const dislikeLookup = await db.query("SELECT userId, contentname, contentid, type FROM likes WHERE liked=$1 AND userId = $2",
+                ['dislike', userId]);
+            let dislikeList = dislikeLookup.rows;
+
+            for(var i=0; i < dislikeList.length; i++){
+                if(dislikeList[i].type === 'Show'){
+
+                    try{
+                        var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${dislikeList[i].contentid}/images`, {
+                                headers : {
+                                    "accept" : "application/json",
+                                    "Authorization" : `Bearer ${tmdbKey}`
+                                }
+                            }
+                        )
+
+                        dislikePackagelikePackage.push({
+                            contentid: dislikeList[i].contentid,
+                            type: dislikeList[i].type,
+                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                        })
+                    } catch(error){
+                        console.log(error)
+                    }
+                    
+                } else if(dislikeList[i].type === 'Movie') {
+                    try{
+                        var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${dislikeList[i].contentid}/images`, {
+                                headers : {
+                                    "accept" : "application/json",
+                                    "Authorization" : `Bearer ${tmdbKey}`
+                                }
+                            }
+                        )
+
+                        dislikePackage.push({
+                            contentid: dislikeList[i].contentid,
+                            type: dislikeList[i].type,
+                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                        })
+                    } catch(error){
+                        console.log(error)
+                    }
+                }
+            }
+
+
+        } catch(error){
+            console.log(error)
+        }
+
 
         console.log("in final:", watchlistPackage)
-        res.status(200).render("profile.ejs", {auth: isUserAutheneticated, email : email, pfp: pfp, name: name, watchlist: watchlistPackage})
+        console.log("in final", likePackage)
+        console.log("in final", dislikePackage)
+        res.status(200).render("profile.ejs", {auth: isUserAutheneticated, email : email, pfp: pfp, name: name, watchlist: watchlistPackage, like: likePackage, dislike: dislikePackage})
     } else{
         res.redirect("/")
     }
@@ -269,8 +378,23 @@ app.get("/likes", async (req, res) =>{
     if(req.isAuthenticated()){
         const userId = req.user.userid
         try {
-            const watchlistLookup = await db.query("SELECT * FROM likes WHERE userId = $1", [userId])
-            res.send(watchlistLookup.rows);
+            const likesLookup = await db.query("SELECT * FROM likes WHERE userId = $1 AND liked=$2", [userId, 'like'])
+            res.send(likesLookup.rows);
+        } catch(error){
+            console.log(error)
+        }
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
+})
+
+app.get("/dislikes", async (req, res) =>{
+    let isAuthenticated = false;
+    if(req.isAuthenticated()){
+        const userId = req.user.userid
+        try {
+            const dislikesLookup = await db.query("SELECT * FROM likes WHERE userId = $1 AND liked=$2", [userId, 'dislike'])
+            res.send(dislikesLookup.rows);
         } catch(error){
             console.log(error)
         }
@@ -280,11 +404,91 @@ app.get("/likes", async (req, res) =>{
 })
 
 app.post("/add/likes", async (req, res)=> {
+    const type = req.body.type;
+    const name = req.body.name;
+    const id = req.body.id;
+    let isAuthenticated = false;
+
+    if(req.isAuthenticated()){
+        try{
+            const userId = req.user.userid;
+            console.log(userId, type, name, id)
+            const likeListInsert = await db.query("INSERT INTO likes (userId, contentname, contentid, type, liked) VALUES ($1, $2, $3, $4, $5)", 
+                [userId, name, id, type, 'like']
+            )
+            res.status(200).send("Content Inserted")
+
+        } catch(error) {
+            console.log(error)
+        }
+    } else{
+        res.json({Credentials : "Missing Credentials"})
+    }
 
 })
 
 app.post("/delete/likes", async (req, res) => {
+    const type = req.body.type;
+    const id = req.body.id;
+    let isAuthenticated = false;
     
+    if(req.isAuthenticated()){
+        try{
+            const userId = req.user.userid;
+            const likeDelete = await db.query("DELETE FROM likes WHERE userId = $1 AND contentid = $2 AND type= $3",
+                [userId, id, type])
+            res.status(200).send("Content Deleted")
+        } catch(error){
+            console.log(error)
+        }    
+        
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
+})
+
+app.post("/add/dislikes", async (req, res)=> {
+    const type = req.body.type;
+    const name = req.body.name;
+    const id = req.body.id;
+    let isAuthenticated = false;
+
+    if(req.isAuthenticated()){
+        try{
+            const userId = req.user.userid;
+            console.log(userId, type, name, id)
+            const dislikeInsert = await db.query("INSERT INTO likes (userId, contentname, contentid, type, liked) VALUES ($1, $2, $3, $4, $5)", 
+                [userId, name, id, type, 'dislike']
+            )
+            res.status(200).send("Content Inserted")
+
+        } catch(error) {
+            console.log(error)
+        }
+    } else{
+        res.json({Credentials : "Missing Credentials"})
+    }
+
+})
+
+app.post("/delete/dislikes", async (req, res) => {
+    const type = req.body.type;
+    const id = req.body.id;
+    let isAuthenticated = false;
+    
+    if(req.isAuthenticated()){
+        try{
+            const userId = req.user.userid;
+            const dislikeDelete = await db.query("DELETE FROM likes WHERE userId = $1 AND contentid = $2 AND type= $3",
+                [userId, id, type])
+            res.status(200).send("Content Deleted")
+        } catch(error){
+            console.log(error)
+        }    
+        
+    } else{
+        res.json({Credentials: "Missing Credentials"})
+    }
 })
 
 app.post("/add/watchlist", async (req,res) =>{

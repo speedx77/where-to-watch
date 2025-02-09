@@ -14,8 +14,8 @@
                 <h3 id="heroTagline" class="mt-2"><%= detailPage.tagline %></h3>
                 <p id="heroDescription"> <%= detailPage.description%></p>
                 <div id="likeArea" class="d-flex gap-3">
-                    <button id="like" type="button" onClick="editlike()"></button>
-                    <div id="dislike" type="button" onClick="editlike()"></div>
+                    <button id="like" type="button"></button>
+                    <button id="dislike" type="button"></button>
                     <% if(locals.auth) { %>
                     <button type=button onClick="editWatchlist()" id="watchlist" class="d-flex align-items-center gap-1 p-1">
                         <div id="watchlistStatus" style="background-image: url('/assets/add.png')"></div>

@@ -14,7 +14,7 @@
         </div>
         <div id="watchlistArea"class="d-flex flex-column align-items-start justify-content-start">
             <h1 style="color: rgb(131, 9, 231)">Watchlist</h1>
-            <% if(locals.watchlist) {%>
+            <% if(locals.watchlist.length > 0) {%>
                 <div id="watchlistCarousel" class="d-flex gap-2 align-items-center">
                     <% locals.watchlist.forEach((element) => {%>
                         <a href="/<%= element.type.toLowerCase()%>/<%= element.contentid%>"><img class="watchlistPoster ms-1 me-1" src="<%= element.poster%>"></a>
@@ -25,12 +25,20 @@
                 <% } %>
         </div>
         <hr>
-        <div class="d-flex flex-column align-items-start justify-content-start">
+        <div id="likeArea" class="d-flex flex-column align-items-start justify-content-start">
             <div class="d-flex align-items-center gap-1">
                 <h1 style="color: rgb(131, 9, 231)">Likes</h1>
                 <div style="height: 25px; width: 25px;" id="like"></div>
             </div>
-            <h4 class="justify-content-end align-items-end">Clearly you haven't watched <span style="color: rgb(131, 9, 231)" id="headerTitle">The Walking Dead</span></h4>
+            <% if(locals.like.length > 0) {%>
+                <div id="likeCarousel" class="d-flex gap-2 align-items-center">
+                    <% locals.like.forEach((element) => {%>
+                        <a href="/<%= element.type.toLowerCase()%>/<%= element.contentid%>"><img class="watchlistPoster ms-1 me-1" src="<%= element.poster%>"></a>
+                    <% }) %>
+                </div>
+            <% } else {%>
+                <h4 class="justify-content-end align-items-end">Clearly you haven't watched <span style="color: rgb(131, 9, 231)" id="headerTitle">The Walking Dead</span></h4>
+            <% } %>
         </div>
         <hr>
         <div class="d-flex flex-column align-items-start justify-content-start">
@@ -38,9 +46,16 @@
                 <h1 style="color: rgb(131, 9, 231)">Dislikes</h1>
                 <div style="height: 25px; width: 25px;" id="dislike"></div>
             </div>
-            <h4 class="justify-content-end align-items-end">I know you hate that one show, <span style="color: rgb(131, 9, 231)">it's okay bro</span></h4>
+            <% if(locals.dislike.length > 0) {%>
+                <div id="likeCarousel" class="d-flex gap-2 align-items-center">
+                    <% locals.dislike.forEach((element) => {%>
+                        <a href="/<%= element.type.toLowerCase()%>/<%= element.contentid%>"><img class="watchlistPoster ms-1 me-1" src="<%= element.poster%>"></a>
+                    <% }) %>
+                </div>
+            <% } else {%>
+                <h4 class="justify-content-end align-items-end">I know you hate that one show, <span style="color: rgb(131, 9, 231)">it's okay bro</span></h4>
+            <% } %>
         </div>
-
     </div>
 </div>
 

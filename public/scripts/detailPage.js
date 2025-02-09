@@ -8,6 +8,7 @@ const like = document.querySelector("#like");
 const dislike = document.querySelector("#dislike");
 var watchlist = null;
 var likeList = null;
+var dislikeList = null;
 console.log(id)
 
 
@@ -21,6 +22,11 @@ async function pullWatchlist(){
 async function pullLikes(){
     await fetch("/likes").then(response => response.json()).then(data => {likeList = data});
     console.log(likeList)
+}
+
+async function pullDislikes(){
+    await fetch("/dislikes").then(response => response.json()).then(data => {dislikeList = data});
+    console.log(dislikeList)
 }
 
 async function watchlistCheck(){
@@ -46,6 +52,102 @@ async function watchlistCheck(){
         })
     }
 }
+
+async function likesCheck(){
+    let check = likeList.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id))
+
+    if(check){
+        like.style.backgroundImage = "url('/assets/like-purple-fill.png')"
+    } else{
+        like.style.backgroundImage = "url('/assets/like.png')"
+    }
+}
+
+async function dislikesCheck(){
+    let check = dislikeList.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id))
+
+    if(check){
+        dislike.style.backgroundImage = "url('/assets/dislike-purple-fill.png')"
+    } else{
+        dislike.style.backgroundImage = "url('/assets/dislike.png')"
+    }
+}
+
+like.addEventListener("click", async function(event) {
+    let check = likeList.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id))
+
+    if(dislike.style.backgroundImage = "url('/assets/dislike-purple-fill.png')"){
+        await fetch("/delete/dislikes", {
+            method: "POST",
+            body: new URLSearchParams({
+                "type" : type,
+                "id" : id
+            })
+        })
+
+        dislike.style.backgroundImage = "url('/assets/dislike.png')"
+        
+        await fetch("/add/likes", {
+            method: "POST",
+            body: new URLSearchParams({
+                "type" : type,
+                "name" : name,
+                "id" : id
+            })
+        })
+    } else {
+        if(!check) {
+            await fetch("/add/likes", {
+                method: "POST",
+                body: new URLSearchParams({
+                    "type" : type,
+                    "name" : name,
+                    "id" : id
+                })
+            })
+        } else {
+            await fetch("/delete/likes", {
+                method: "POST",
+                body: new URLSearchParams({
+                    "type" : type,
+                    "id" : id
+                })
+            })
+        }
+    }
+
+    
+
+    await pullLikes();
+    await likesCheck();
+
+});
+
+dislike.addEventListener("click", async function(event) {
+    let check = dislikeList.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id));
+
+    if(!check) {
+        await fetch("/add/dislikes", {
+            method: "POST",
+            body: new URLSearchParams({
+                "type" : type,
+                "name" : name,
+                "id" : id
+            })
+        })
+    } else {
+        await fetch("/delete/dislikes", {
+            method: "POST",
+            body: new URLSearchParams({
+                "type" : type,
+                "id" : id
+            })
+        })
+    }
+
+    await pullDislikes();
+    await dislikesCheck();
+})
 
 async function editWatchlist(){
     let check = watchlist.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id));
@@ -75,6 +177,10 @@ async function editWatchlist(){
 async function pageStart(){
     await pullWatchlist();
     await watchlistCheck();
+    await pullLikes();
+    await pullDislikes();
+    await likesCheck();
+    await dislikesCheck();
     //await editWatchlist();
 }
 

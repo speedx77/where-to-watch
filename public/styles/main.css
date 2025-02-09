@@ -348,6 +348,8 @@ body,html {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    border: none;
+    background-color: transparent;
     transition: background-image 250ms;
 }
 
