@@ -1,4 +1,4 @@
-<%- include("partials/header.ejs") %>
+<%- include("partials/headerWithSearch.ejs") %>
 <div id="detailPageContainer" class="d-flex flex-column">
     <div id="heroContainer">
         <div id="hero" class="d-flex justify-content-center align-items-center gap-3" style="background-image: linear-gradient(-180deg, rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 0.3) 100%), url('<%= detailPage.backdrop%>');">
@@ -14,9 +14,9 @@
                 <h3 id="heroTagline" class="mt-2"><%= detailPage.tagline %></h3>
                 <p id="heroDescription"> <%= detailPage.description%></p>
                 <div id="likeArea" class="d-flex gap-3">
+                    <% if(locals.auth) { %>
                     <div id="like"></div>
                     <div id="dislike"></div>
-                    <% if(locals.auth) { %>
                     <button type=button onClick="editWatchlist()" id="watchlist" class="d-flex align-items-center gap-1 p-1">
                         <div id="watchlistStatus" style="background-image: url('/assets/add.png')"></div>
                         <div id="watchlistText">Add to Watchlist</div>

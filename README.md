@@ -54,6 +54,8 @@ In the Age of Streaming, Where To Watch is a search engine that helps users find
 
 11. Welcome [USER] on homepage
 
+12. Likes on showpage
+
 ----------
 
 POST MVP

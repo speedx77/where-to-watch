@@ -74,6 +74,10 @@ body,html {
     
 }
 
+#searchContainerSearch{
+    width: 50%;
+}
+
 #searchBar {
     width: 100%;
     margin-top: 30px;
@@ -81,6 +85,13 @@ body,html {
     border: 2px solid rgb(131, 9, 231);
     border-radius: 7px;
     height: 50px;
+}
+
+#searchBarOnSearch {
+    width: 50%;
+    height: 30px;
+    border: 2px solid rgb(131, 9, 231);
+    border-radius: 7px;
 }
 
 #submitButton {
@@ -91,6 +102,15 @@ body,html {
     color: white;
     font-weight: bold;
     font-size: 16px;
+}
+
+#submitButtonOnSearch {
+    width: 15%;
+    height: 30px;
+    background-color: rgb(131, 9, 231);
+    color: white;
+    font-weight: bold;
+    border-radius: 7px;
 }
 
 .loginButton {
@@ -487,6 +507,12 @@ body,html {
   }
 
   #watchlistCarousel{
+    width: 1000px;
+    height: 225px;
+    overflow-x: scroll;
+  }
+
+  #likeCarousel{
     width: 1000px;
     height: 225px;
     overflow-x: scroll;

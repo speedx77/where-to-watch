@@ -76,17 +76,21 @@ async function dislikesCheck(){
 like.addEventListener("click", async function(event) {
     let check = likeList.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id))
 
-    if(dislike.style.backgroundImage = "url('/assets/dislike-purple-fill.png')"){
-        await fetch("/delete/dislikes", {
-            method: "POST",
-            body: new URLSearchParams({
-                "type" : type,
-                "id" : id
-            })
-        })
+    if(!check){
 
-        dislike.style.backgroundImage = "url('/assets/dislike.png')"
-        
+        if(dislike.style.backgroundImage = "url('/assets/dislike-purple-fill.png')"){
+            await fetch("/delete/dislikes", {
+                method: "POST",
+                body: new URLSearchParams({
+                    "type" : type,
+                    "id" : id
+                })
+            })
+    
+            dislike.style.backgroundImage = "url('/assets/dislike.png')"
+            
+        }
+
         await fetch("/add/likes", {
             method: "POST",
             body: new URLSearchParams({
@@ -95,31 +99,23 @@ like.addEventListener("click", async function(event) {
                 "id" : id
             })
         })
+
     } else {
-        if(!check) {
-            await fetch("/add/likes", {
-                method: "POST",
-                body: new URLSearchParams({
-                    "type" : type,
-                    "name" : name,
-                    "id" : id
-                })
+        await fetch("/delete/likes", {
+            method: "POST",
+            body: new URLSearchParams({
+                "type" : type,
+                "id" : id
             })
-        } else {
-            await fetch("/delete/likes", {
-                method: "POST",
-                body: new URLSearchParams({
-                    "type" : type,
-                    "id" : id
-                })
-            })
-        }
+        })
     }
 
     
 
     await pullLikes();
+    await pullDislikes();
     await likesCheck();
+    await dislikesCheck();
 
 });
 
@@ -127,6 +123,21 @@ dislike.addEventListener("click", async function(event) {
     let check = dislikeList.some((element) => element.hasOwnProperty("contentid") && element.contentid === Number(id));
 
     if(!check) {
+
+        if(like.style.backgroundImage = "url('/assets/like-purple-fill.png')"){
+            await fetch("/delete/dislikes", {
+                method: "POST",
+                body: new URLSearchParams({
+                    "type" : type,
+                    "id" : id
+                })
+            })
+
+            like.style.backgroundImage = "url('/assets/like.png')"
+        }
+
+
+
         await fetch("/add/dislikes", {
             method: "POST",
             body: new URLSearchParams({
@@ -146,7 +157,9 @@ dislike.addEventListener("click", async function(event) {
     }
 
     await pullDislikes();
+    await pullLikes();
     await dislikesCheck();
+    await likesCheck();
 })
 
 async function editWatchlist(){
