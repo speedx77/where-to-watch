@@ -11,7 +11,8 @@ import env from "dotenv"
 import multer from "multer";
 import path from "path";
 
-
+//process.env.TMDB_KEY
+//process.env.TRACK_CLIENT_ID
 const app = express();
 const port = 3001;
 env.config();
@@ -121,7 +122,7 @@ app.get("/profile", async (req, res) => {
                             var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${element.contentid}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -141,7 +142,7 @@ app.get("/profile", async (req, res) => {
                             var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${element.contentid}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -166,7 +167,7 @@ app.get("/profile", async (req, res) => {
                     var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${watchlistLookup.rows[i].contentid}/images`, {
                         headers : {
                             "accept" : "application/json",
-                            "Authorization" : `Bearer ${tmdbKey}`
+                            "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                         }
                     }
                 )
@@ -186,7 +187,7 @@ app.get("/profile", async (req, res) => {
                     var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${watchlistLookup.rows[i].contentid}/images`, {
                         headers : {
                             "accept" : "application/json",
-                            "Authorization" : `Bearer ${tmdbKey}`
+                            "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                         }
                     }
                 )
@@ -218,7 +219,7 @@ app.get("/profile", async (req, res) => {
                         var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${likeList[i].contentid}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -237,7 +238,7 @@ app.get("/profile", async (req, res) => {
                         var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${likeList[i].contentid}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -270,7 +271,7 @@ app.get("/profile", async (req, res) => {
                         var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${dislikeList[i].contentid}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -289,7 +290,7 @@ app.get("/profile", async (req, res) => {
                         var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${dislikeList[i].contentid}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -611,7 +612,7 @@ app.get("/show/:id", async (req,res) => {
         var detailResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, {
                     headers : {
                         "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
+                        "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                     }
                 }
             )
@@ -621,7 +622,7 @@ app.get("/show/:id", async (req,res) => {
                 var providerResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers`, {
                     headers : {
                         "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
+                        "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                     }
                 })
 
@@ -631,7 +632,7 @@ app.get("/show/:id", async (req,res) => {
                     var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${id}/images`, {
                             headers : {
                                 "accept" : "application/json",
-                                "Authorization" : `Bearer ${tmdbKey}`
+                                "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                             }
                         }
                     )
@@ -708,7 +709,7 @@ app.get("/movie/:id", async (req,res) => {
         var detailResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, {
                     headers : {
                         "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
+                        "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                     }
                 }
             )
@@ -718,7 +719,7 @@ app.get("/movie/:id", async (req,res) => {
                 var providerResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/watch/providers`, {
                     headers : {
                         "accept" : "application/json",
-                        "Authorization" : `Bearer ${tmdbKey}`
+                        "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                     }
                 })
 
@@ -728,7 +729,7 @@ app.get("/movie/:id", async (req,res) => {
                     var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/images`, {
                             headers : {
                                 "accept" : "application/json",
-                                "Authorization" : `Bearer ${tmdbKey}`
+                                "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                             }
                         }
                     )
@@ -820,7 +821,7 @@ app.post("/search", async (req, res) => {
             headers : {
                 "Content-Type" : "application/json",
                 "trakt-api-version" : 2,
-                "trakt-api-key" : traktClientId
+                "trakt-api-key" : process.env.TRACK_CLIENT_ID
             }
         })
     } catch(error){
@@ -833,7 +834,7 @@ app.post("/search", async (req, res) => {
             headers : {
                 "Content-Type" : "application/json",
                 "trakt-api-version" : 2,
-                "trakt-api-key" : traktClientId
+                "trakt-api-key" : process.env.TRACK_CLIENT_ID
             }
         })
     } catch (error){
@@ -865,7 +866,7 @@ app.post("/search", async (req, res) => {
                     var detailResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieResult[i].movie.ids.tmdb}?language=en-US`, {
                             headers : {
                                 "accept" : "application/json",
-                                "Authorization" : `Bearer ${tmdbKey}`
+                                "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                             }
                         }
                     )
@@ -875,7 +876,7 @@ app.post("/search", async (req, res) => {
                         var imageResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieResult[i].movie.ids.tmdb}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -924,7 +925,7 @@ app.post("/search", async (req, res) => {
                     var detailResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showResult[i].show.ids.tmdb}?language=en-US`, {
                             headers : {
                                 "accept" : "application/json",
-                                "Authorization" : `Bearer ${tmdbKey}`
+                                "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                             }
                         }
                     )
@@ -934,7 +935,7 @@ app.post("/search", async (req, res) => {
                         var imageResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showResult[i].show.ids.tmdb}/images`, {
                                 headers : {
                                     "accept" : "application/json",
-                                    "Authorization" : `Bearer ${tmdbKey}`
+                                    "Authorization" : `Bearer ${process.env.TMDB_KEY}`
                                 }
                             }
                         )
@@ -1082,5 +1083,5 @@ passport.deserializeUser((user, cb) => {
 
 
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+    console.log(`Server running on ${port}`);
 });
