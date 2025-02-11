@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import axios from "axios";
-import {tmdbKey, traktClientId} from "./secrets/secrets.js";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy } from "passport-local";
