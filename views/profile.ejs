@@ -1,18 +1,18 @@
 <%- include("partials/headerWithSearch.ejs") %>
-<div class="pageContainer d-flex justify-content-center">
-    <div id="userContainer" style="margin-top: 100px;" class="d-flex flex-column">
+<div class="pageContainer d-flex justify-content-center align-items-center">
+    <div id="userContainer" class="d-flex flex-column">
         <div class="d-flex flex-column align-items-center">
-            <div class="d-flex align-items-end">
+            <div class="d-flex flex-column flex-md-row align-items-center">
                 <div class="pfp" style="background-image: url('<%= locals.pfp%>')" id="userPfp"></div>
-                <form action="/changepfp" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-1">
+                <form action="/changepfp" method="post" enctype="multipart/form-data" class="d-flex flex-column  gap-1 mt-1 ms-md-3">
                     <input type="file" id="imageUpload" name="newPfp" accept="image/*">
                     <input type="submit" value="Upload Image" id="pfpChange">
                 </form>
             </div>
-            <div id="displayName" class="mt-3"><strong><%= locals.name%></strong></div>
-            <div id="userEmail" class="mt-3"><strong style="white-space: pre;">Email: </strong><%= locals.email%></div>
+            <div id="displayName" class="mt-3"><strong style="white-space: pre; color: rgb(131, 9, 231)">Display Name: </strong><%= locals.name%></div>
+            <div id="userEmail" class="mt-3"><strong style="white-space: pre; color: rgb(131, 9, 231)">Email: </strong><%= locals.email%></div>
         </div>
-        <div id="watchlistArea"class="d-flex flex-column align-items-start justify-content-start">
+        <div id="watchlistArea"class="d-flex flex-column align-items-start justify-content-start mt-3">
             <h1 style="color: rgb(131, 9, 231)">Watchlist</h1>
             <% if(locals.watchlist.length > 0) {%>
                 <div id="watchlistCarousel" class="d-flex gap-2 align-items-center">

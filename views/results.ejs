@@ -12,14 +12,14 @@
 
 
 %>
-<div class="pageContainer d-flex justify-content-center">
-
-        <div class="d-flex flex-column">
-            <form class="d-flex gap-3 mt-3 justify-content-center align-items-center" action="/search" method="post">
+<div class="pageContainer d-flex justify-content-center align-items-center">
+    
+            
+        <div id="resultsContainer">
+            <form class="d-flex gap-3 mt-3 mb-4 justify-content-center align-items-center" action="/search" method="post">
                 <input type="text" id="searchBarOnSearch" name="searchTerm" placeholder="Name of Show or Movie">
                 <input type="submit" id="submitButtonOnSearch" value="Search">
             </form>
-        <div id="resultsContainer">
             <% if(wasSearchTermFound === true) {%>
                 <% for (var i=0; i < searchData.length; i++) {%>
                     <a class="result d-flex mb-3" href="#" style="text-decoration: none; color: black" data-content-type="<%= searchData[i].type %>" data-tmdb-id="<%= searchData[i].id%>">
@@ -37,7 +37,6 @@
                 <h1>Show/Movie Not Found!</h1>
             <% } %>
         </div>
-    </div>
 
 </div>
 

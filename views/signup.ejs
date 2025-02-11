@@ -1,6 +1,6 @@
 <%- include("partials/header.ejs") %>
-<div class="pageContainer d-flex justify-content-center">
-    <div id="signUpContainer" style="margin-top: 300px;">
+<div class="pageContainer d-flex justify-content-center align-items-center">
+    <div id="signUpContainer">
         <div><h1>Is it on <span style="color: rgb(131, 9, 231)" id="headerTitleProvider">Paramount+<span style="color: black; white-space: pre;">?</span></span></h1></div>
         <h3>Sign up for <span style="color: rgb(131, 9, 231)">Where to Watch</span> to save a watchlist of your favorite shows and movies</h3>
         <form id="signUpForm" class="d-flex flex-column justify-content-center align-items-start signUpArea" action="/register" method="post">
@@ -25,6 +25,7 @@
             </div>
     
         </form>
+        
         <div class="d-flex gap-5 justify-content-center mt-3"> <a class="loginButtonSignUp" href="/login">Already Have an Account? Log In</a></div>
     </div>
 </div>

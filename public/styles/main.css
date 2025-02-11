@@ -4,6 +4,15 @@ body,html {
     height: 100vh;
 }
 
+#headerLogo {
+    height: 50px;
+    width: 50px;
+    background-image: url('/assets/wtw-logo-black.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
 .nav-color{
     background-color: rgba(125, 18, 187,0.5);
 }
@@ -17,15 +26,18 @@ body,html {
     font-weight: bold;
 }
 
+.titleWrap{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: end;
+}
+
 #title{
     text-decoration: none;
-    color: white;
-    border: 2px solid white;
-    border-radius: 8px;
-    padding: 3px;
-    box-shadow: black -5px -5px;
-    background-color: rgb(125, 18, 187);
+    color: black;
     font-weight: bold;
+    height: 40px;
 }
 
 #pfpNav {
@@ -67,12 +79,48 @@ body,html {
     }
 }
 
+.pageContainer{
+    height: 90vh;
+}
+
 #searchContainer {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 80%;
     
 }
+
+#signUpContainer{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 70vh;
+}
+
+#loginContainer{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 70vh;
+}
+
+#userContainer{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 70vh;
+}
+
+#resultsContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 70vh;
+    justify-content: start;
+    align-items: center;
+
+}
+
 
 #searchContainerSearch{
     width: 50%;
@@ -105,8 +153,8 @@ body,html {
 }
 
 #submitButtonOnSearch {
-    width: 15%;
-    height: 30px;
+    width: fit-content;
+    height: fit-content;
     background-color: rgb(131, 9, 231);
     color: white;
     font-weight: bold;
@@ -121,7 +169,8 @@ body,html {
     padding: 5px;
     font-weight: bold;
     border: 2px solid rgb(131, 9, 231);
-    width: 20%;
+    width: fit-content;
+    height: fit-content;
     font-size: 13px;
     text-align: center;
     transition: background-color 500ms, color 500ms;
@@ -140,7 +189,8 @@ body,html {
     padding: 5px;
     font-weight: bold;
     border: 2px solid black;
-    width: 25%;
+    width: fit-content;
+    height: fit-content;
     font-size: 13px;
     text-align: center;
     transition: background-color 500ms, color 500ms;
@@ -159,7 +209,8 @@ body,html {
     padding: 5px;
     font-weight: bold;
     border: 2px solid black;
-    width: 20%;
+    width: fit-content;
+    height: fit-content;
     font-size: 13px;
     text-align: center;
     transition: background-color 500ms, color 500ms;
@@ -170,19 +221,12 @@ body,html {
     color: white;
 }
 
-#resultsContainer {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    margin-top: 50px;
 
-}
+/* adjust size per screen size, overflow y on result? */
+
 
 .result {
-    width: 800px;
+    width: 80%;
     height: 150px;
     /* background-color: red; */
     border: 1px solid black;
@@ -206,7 +250,7 @@ body,html {
 
 .posterArea {
     height: 100%;
-    width: 15%;
+    width: 17.5%;
     /* background-color: green; */
     background-repeat: no-repeat;
     background-position: start;
@@ -227,6 +271,7 @@ body,html {
 .infoArea {
     height: 100%;
     width: 70%;
+    overflow-y: hidden;
     /* background-color: blue; */
 }
 
@@ -236,8 +281,6 @@ body,html {
     -webkit-line-clamp: 3;
     text-overflow: ellipsis; 
     overflow: hidden;
-    
-
 
 }
 
@@ -443,28 +486,28 @@ body,html {
 
 
 #registerButton {
-    width: 15%;
+    width: fit-content;
     border-radius: 7px;
-    height: 50px;
+    height: fit-content;
     background-color: rgb(131, 9, 231);
     color: white;
     font-weight: bold;
     font-size: 16px;
+    transition: background-color 500ms;
+}
+
+#registerButton:hover{
+    background-color: black;
 }
 
 #loginButton {
-    width: 15%;
+    width: fit-content;
     border-radius: 7px;
-    height: 50px;
+    height: fit-content;
     background-color: rgb(131, 9, 231);
     color: white;
     font-weight: bold;
     font-size: 16px;
-}
-
-#loginContainer {
-    height: 100vh;
-    width: 80vh;
 }
 
 /*----------------------------------------------------------*/
@@ -479,9 +522,87 @@ body,html {
     border: 2px solid rgb(131, 9, 231);
   }
 
+@media screen and (max-width: 400px){
+
+
+      .result {
+        width: 80%;
+        height: 150px;
+        /* background-color: red; */
+        border: 1px solid black;
+        border-radius: 8px;
+        box-shadow: 10px -10px rgb(125, 18, 187);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    
+    
+    }
+
+    .posterArea {
+        height: 100%;
+        width: 40%;
+        /* background-color: green; */
+        background-repeat: no-repeat;
+        background-position: start;
+        background-size: contain;
+        border-radius: 8px;
+    
+    }
+}
+
+@media screen and (max-width: 576px){
+
+    .pfp {
+        height: 128px;
+        width: 128px;
+        border-radius: 50%;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        border: 2px solid rgb(131, 9, 231);
+      }
+
+    .pfp {
+        height: 128px;
+        width: 128px;
+        border-radius: 50%;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        border: 2px solid rgb(131, 9, 231);
+      }
+
+      .result {
+        width: 80%;
+        height: 150px;
+        /* background-color: red; */
+        border: 1px solid black;
+        border-radius: 8px;
+        box-shadow: 10px -10px rgb(125, 18, 187);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    
+    
+    }
+
+    .posterArea {
+        height: 100%;
+        width: 40%;
+        /* background-color: green; */
+        background-repeat: no-repeat;
+        background-position: start;
+        background-size: contain;
+        border-radius: 8px;
+    
+    }
+}
+
+
   #pfpChange {
-    height: 25px;
-    width: 50%;
+    height: fit-content;
+    width: fit-content;
     border-radius: 8px;
     background-color: rgb(131, 9, 231);
     color: white;
@@ -499,7 +620,7 @@ body,html {
   }
 
   .watchlistPoster:hover{
-    border: 3px solid rgb(131, 9, 231);
+    border: 3px solid #8309e7;
   }
 
   #watchlistArea{
@@ -507,13 +628,13 @@ body,html {
   }
 
   #watchlistCarousel{
-    width: 1000px;
+    width: 100%;
     height: 225px;
     overflow-x: scroll;
   }
 
   #likeCarousel{
-    width: 1000px;
+    width: 100%;
     height: 225px;
     overflow-x: scroll;
   }

@@ -1,4 +1,4 @@
-var headerTitles = ["Better Call Saul", "Neon Genesis Evangelion", "Mad Men", "Succession", "Inception", "Dexter", "The Boys", "Man of Steel", "your mom lol"];
+var headerTitles = ["Better Call Saul", "Evangelion", "Mad Men", "Succession", "Inception", "Dexter", "The Boys", "Man of Steel", "your mom lol"];
 var dupeSelectedTitle = -1;
 
 //put these in the database
