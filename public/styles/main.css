@@ -121,6 +121,13 @@ body,html {
 
 }
 
+#providerArea{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
 
 #searchContainerSearch{
     width: 50%;
@@ -301,6 +308,7 @@ body,html {
 
 #heroContainer {
     border-bottom: 5px solid rgb(125, 18, 187);
+    height: fit-content;
 }
 
 #hero {
@@ -318,6 +326,8 @@ body,html {
     border-radius: 8px;
     border: 2px solid white;
     box-shadow: 0px 0px 5px 5px black;
+    height: 187.5px;
+    width: 125px;
 }
 
 #heroInfo{
@@ -357,7 +367,13 @@ body,html {
     background-color: rgba(0,0,0, 0.5);
     border-radius: 5px;
     padding: 3px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+    text-overflow: ellipsis; 
+    overflow: hidden;
 }
+
 
 #providerDetailName {
     color: rgb(125, 18, 187);
@@ -421,7 +437,7 @@ body,html {
 }
 
 #watchlist{
-    height: 32px;
+    height: fit-content;
     width: fit-content;
     background-color: #7d12bb;
     color: white;
@@ -597,6 +613,16 @@ body,html {
         border-radius: 8px;
     
     }
+
+    #heroPoster {
+        height: 187.5px;
+        width: 125px;
+        border-radius: 8px;
+        border: 2px solid white;
+        box-shadow: 0px 0px 5px 5px black;
+        
+    }
+    
 }
 
 
@@ -638,3 +664,27 @@ body,html {
     height: 225px;
     overflow-x: scroll;
   }
+
+#subscriptionArea {
+    width: 70%;
+    height: 180px;
+    overflow-x: scroll;
+}
+
+#adsArea {
+    width: 70%;
+    height: 180px;
+    overflow-x: scroll;
+}
+
+#rentArea {
+    width: 70%;
+    height: 180px;
+    overflow-x: scroll;
+}
+
+#purchaseArea {
+    width: 70%;
+    height: 180px;
+    overflow-x: scroll;
+}
