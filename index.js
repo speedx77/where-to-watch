@@ -43,7 +43,26 @@ const db = new pg.Client({
 });
 db.connect();
 
-//---------------------------------------------
+//----------------Helper Functions-----------------------------
+
+
+async function findEnImage(response, imageType){
+    if(response[imageType].length !== 0){
+        for(let i = 0; i < response[imageType].length; i++){
+            //console.log(i)
+            //console.log(response[imageType][i].iso_639_1)
+            if(response[imageType][i].iso_639_1 === "en"){
+                return response[imageType][i].file_path
+            }
+        }
+        return response[imageType][0].file_path
+
+    }   
+}
+
+
+
+//-----------------------------------------------
 
 app.get("/", async (req, res) => {
     let isUserAutheneticated = false;
@@ -78,7 +97,7 @@ app.get('/test', (req, res) => {
 })
 
 app.get("/profile", async (req, res) => {
-    console.log(req.user)
+    //console.log(req.user)
     let isUserAutheneticated = false;
 
     if(req.isAuthenticated()){
@@ -92,7 +111,7 @@ app.get("/profile", async (req, res) => {
         var dislikeList = null;
         var dislikePackage = [];
         const userId = req.user.userid;
-        console.log(userId);
+        //console.log(userId);
 
         try {
             const pfpRead = await db.query("SELECT displayname, pfpfilename FROM users WHERE email = $1", [email])
@@ -171,10 +190,12 @@ app.get("/profile", async (req, res) => {
                     }
                 )
 
+                const poster = await findEnImage(imageResponse.data, "posters")
+
                 watchlistPackage.push({
                     contentid: watchlistLookup.rows[i].contentid,
                     type: watchlistLookup.rows[i].type,
-                    poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                    poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
 
                 })
                 //console.log("in try:", watchlistPackage)
@@ -191,10 +212,12 @@ app.get("/profile", async (req, res) => {
                     }
                 )
 
+                const poster = await findEnImage(imageResponse.data, "posters")
+
                 watchlistPackage.push({
                     contentid: watchlistLookup.rows[i].contentid,
                     type: watchlistLookup.rows[i].type,
-                    poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                    poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
 
                 })
                 } catch(error){
@@ -223,10 +246,13 @@ app.get("/profile", async (req, res) => {
                             }
                         )
 
+                        const poster = await findEnImage(imageResponse.data, "posters")
+
+
                         likePackage.push({
                             contentid: likeList[i].contentid,
                             type: likeList[i].type,
-                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                            poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
                         })
                     } catch(error){
                         console.log(error)
@@ -242,10 +268,12 @@ app.get("/profile", async (req, res) => {
                             }
                         )
 
+                        const poster = await findEnImage(imageResponse.data, "posters")
+
                         likePackage.push({
                             contentid: likeList[i].contentid,
                             type: likeList[i].type,
-                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                            poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
                         })
                     } catch(error){
                         console.log(error)
@@ -275,10 +303,12 @@ app.get("/profile", async (req, res) => {
                             }
                         )
 
+                        const poster = await findEnImage(imageResponse.data, "posters")
+
                         dislikePackagelikePackage.push({
                             contentid: dislikeList[i].contentid,
                             type: dislikeList[i].type,
-                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                            poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
                         })
                     } catch(error){
                         console.log(error)
@@ -294,10 +324,12 @@ app.get("/profile", async (req, res) => {
                             }
                         )
 
+                        const poster = await findEnImage(imageResponse.data, "posters")
+
                         dislikePackage.push({
                             contentid: dislikeList[i].contentid,
                             type: dislikeList[i].type,
-                            poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
+                            poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
                         })
                     } catch(error){
                         console.log(error)
@@ -311,9 +343,9 @@ app.get("/profile", async (req, res) => {
         }
 
 
-        console.log("in final:", watchlistPackage)
-        console.log("in final", likePackage)
-        console.log("in final", dislikePackage)
+        //console.log("in final:", watchlistPackage)
+        //console.log("in final", likePackage)
+        //console.log("in final", dislikePackage)
         res.status(200).render("profile.ejs", {auth: isUserAutheneticated, email : email, pfp: pfp, name: name, watchlist: watchlistPackage, like: likePackage, dislike: dislikePackage})
     } else{
         res.redirect("/")
@@ -456,7 +488,7 @@ app.post("/add/dislikes", async (req, res)=> {
     if(req.isAuthenticated()){
         try{
             const userId = req.user.userid;
-            console.log(userId, type, name, id)
+            //console.log(userId, type, name, id)
             const dislikeInsert = await db.query("INSERT INTO likes (userId, contentname, contentid, type, liked) VALUES ($1, $2, $3, $4, $5)", 
                 [userId, name, id, type, 'dislike']
             )
@@ -521,9 +553,9 @@ app.post("/delete/watchlist", async (req,res) =>{
     if(req.isAuthenticated()){
         try{
             const userId = req.user.userid;
-            console.log(userId);
-            console.log(type);
-            console.log(id);
+            //console.log(userId);
+            //console.log(type);
+            //console.log(id);
             const watchlistInsert = await db.query("DELETE FROM watchlist WHERE userId = $1 AND contentid = $2 AND type= $3",
                 [userId, id, type])
             res.status(200).send("Content Deleted")
@@ -544,8 +576,8 @@ app.post("/register", async(req, res) => {
     const password = req.body.pwd;
     const name = req.body.name;
 
-    console.log(password)
-    console.log(salt)
+    //console.log(password)
+    //console.log(salt)
 
     try {
         const checkEmails = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -636,6 +668,8 @@ app.get("/show/:id", async (req,res) => {
                         }
                     )
 
+                    const poster = await findEnImage(imageResponse.data, "posters")
+                    const backdrop = await findEnImage(imageResponse.data, "backdrops")
                     //types = flatrate, buy, ads (see providers example)
                     /*
                     id: showResult[i].show.ids.tmdb,
@@ -654,13 +688,13 @@ app.get("/show/:id", async (req,res) => {
                         tagline: detailResponse.data.tagline || null,
                         description: detailResponse.data.overview || null,
                         genres: detailResponse.data.genres || null,
-                        poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
-                        backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
+                        poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
+                        backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${backdrop}` || null,
                         providers: providerResponse.data.results.US
 
                     }
 
-                    console.log(detailPagePackage);
+                    //console.log(detailPagePackage);
 
 
                 } catch (error) {
@@ -733,6 +767,13 @@ app.get("/movie/:id", async (req,res) => {
                         }
                     )
 
+                    //console.log(imageResponse.data)
+
+                    const poster = await findEnImage(imageResponse.data, "posters")
+                    const backdrop = await findEnImage(imageResponse.data, "backdrops")
+                    //console.log(poster)
+                    //console.log(backdrop)
+
                     //types = flatrate, buy, ads (see providers example)
                     /*
                     id: showResult[i].show.ids.tmdb,
@@ -752,12 +793,15 @@ app.get("/movie/:id", async (req,res) => {
                                 tagline: detailResponse.data.tagline || null,
                                 description: detailResponse.data.overview || null,
                                 genres: detailResponse.data.genres || null,
-                                poster: `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`,
-                                backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${imageResponse.data.backdrops[0].file_path}`,
+                                //poster: poster || null,
+                                //backdrop: backdrop || null,
+                                poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
+                                backdrop: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${backdrop}` || null,
                                 providers: providerResponse.data.results.US || null
         
                             }
                     
+                            //console.log(detailPagePackage)
 
                 } catch (error) {
                     console.log(error)
@@ -778,6 +822,7 @@ app.get("/movie/:id", async (req,res) => {
     //res.status(200).send(detailPagePackage)
     res.status(200).render("movie-detail.ejs", {auth: isAuthenticated, pfp: pfp, detailPage : detailPagePackage})
 });
+
 
 
 
@@ -844,8 +889,8 @@ app.post("/search", async (req, res) => {
     const movieResult = movieResponse.data;
     const showResult = showResponse.data;
 
-    console.log(movieResult.length)
-    console.log(showResult.length);
+    //console.log(movieResult.length)
+    //console.log(showResult.length);
 
     let searchResults = {
         movie : movieResult,
@@ -853,7 +898,7 @@ app.post("/search", async (req, res) => {
     }
 
     if (movieResult.length === 0){
-        console.log("no movies found")
+        //console.log("no movies found")
     } else{
         for (var i = 0; i < movieResult.length; i++){
 
@@ -879,7 +924,8 @@ app.post("/search", async (req, res) => {
                                 }
                             }
                         )
-                        
+
+                        const poster = await findEnImage(imageResponse.data, "posters")                        
     
                         searchPackage.push({
                             id: movieResult[i].movie.ids.tmdb,
@@ -888,7 +934,7 @@ app.post("/search", async (req, res) => {
                             year : movieResult[i].movie.year,
                             title : movieResult[i].movie.title,
                             description : detailResponse.data.overview,
-                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
+                            poster : `https://image.tmdb.org/t/p/w500${poster}` || null,
             
                         })
     
@@ -938,7 +984,7 @@ app.post("/search", async (req, res) => {
                                 }
                             }
                         )
-
+                        const poster = await findEnImage(imageResponse.data, "posters")
                         //console.log(detailResponse)
 
                         searchPackage.push({
@@ -948,7 +994,7 @@ app.post("/search", async (req, res) => {
                             year : showResult[i].show.year,
                             title : showResult[i].show.title,
                             description : detailResponse.data.overview,
-                            poster : `https://image.tmdb.org/t/p/w500${imageResponse.data.posters[0].file_path}`
+                            poster : `https://image.tmdb.org/t/p/w500${poster}` || null,
             
                         })
                         
@@ -999,7 +1045,7 @@ app.get("/image/:filename", async (req, res) => {
         if(fileSearch.rows.length > 0){
             const dirname = path.resolve();
             const fullfilepath = path.join(dirname, fileSearch.rows[0].pfpfilepath)
-            console.log(fullfilepath)
+            //console.log(fullfilepath)
             res.type(fileSearch.rows[0].pfpmimetype).sendFile(fullfilepath);
         } else{
             res.send("not found")
