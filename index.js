@@ -858,6 +858,24 @@ app.post("/search", async (req, res) => {
 
     var searchPackage = [];
     var contentScore = [];
+    let isAuthenticated = false;
+
+    if(req.isAuthenticated()){
+        const email = req.user.email;
+        var pfp = null;
+        isAuthenticated = true;
+        try {
+            const pfpRead = await db.query("SELECT pfpfilename FROM users WHERE email = $1", [email])
+            if(pfpRead.rows[0].pfpfilename === null){
+                pfp = "assets/pfp.png";
+            } else{
+                //console.log(pfpRead.rows[0].pfp)
+                pfp = `/image/${pfpRead.rows[0].pfpfilename}`;
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
 
     // https://api.trakt.tv/search/movie?query=cars
     try{
@@ -1014,7 +1032,7 @@ app.post("/search", async (req, res) => {
 
     wasSearchTermFound = true
     //res.status(200).send(searchPackage)
-    res.status(200).render("results.ejs", {wasSearchTermFound : wasSearchTermFound, searchData : searchPackage});
+    res.status(200).render("results.ejs", {wasSearchTermFound : wasSearchTermFound, searchData : searchPackage, auth: isAuthenticated, pfp: pfp});
 
 })
 
