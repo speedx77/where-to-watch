@@ -24,8 +24,9 @@ CREATE TABLE likes(
 	PRIMARY KEY(contentid, userId)
 )
 
-INSERT INTO watchlist (userId, contentname, contentid, type) VALUES (1, 'Neon Genesis Evangelion', 890, 'Show')
+INSERT INTO users (userId, displayname, email, password, pfpfilename, pfpfilepath, pfpmimetype) VALUES (1, "speedx77", "testEmail@email.com", "testPass", "", "", "")
 
+INSERT INTO watchlist (userId, contentname, contentid, type) VALUES (1, 'Neon Genesis Evangelion', 890, 'Show')
 
 INSERT INTO watchlist (userId, contentname, contentid, type) VALUES (1, 'Batman v Superman: Dawn of Justice', 209112, 'Movie')
 
