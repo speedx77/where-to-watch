@@ -305,7 +305,7 @@ app.get("/profile", async (req, res) => {
 
                         const poster = await findEnImage(imageResponse.data, "posters")
 
-                        dislikePackagelikePackage.push({
+                        dislikePackage.push({
                             contentid: dislikeList[i].contentid,
                             type: dislikeList[i].type,
                             poster: `https://image.tmdb.org/t/p/w500${poster}` || null,
